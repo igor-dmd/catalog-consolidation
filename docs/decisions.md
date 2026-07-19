@@ -35,6 +35,13 @@ This document captures the durable design decisions for the catalog consolidatio
 - Schema changes live in explicit SQL migration files and are applied before import.
 - Initial schema work should minimally adapt seller product references to text and add uniqueness protection for seller links.
 
+## Layering And Boundaries
+
+- Domain/application types live in `src/domain` and use application-facing naming and semantics.
+- Database schema types live in `src/db` and reflect SQLite table/column shapes.
+- Translation between database rows and domain models happens only in DB adapter mapper functions.
+- Domain and application modules must not import database row types directly.
+
 ## Interface And Scope
 
 - The required behavior is exposed as a TypeScript CLI import command.
@@ -54,4 +61,3 @@ This document captures the durable design decisions for the catalog consolidatio
 
 - Do not commit the supplied assessment PDFs, original SQLite database, or original import file.
 - Use synthetic fixtures in the repository and accept external `--db` and `--input` paths for local assessment assets.
-

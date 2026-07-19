@@ -8,9 +8,9 @@
 ## 2. Data Model
 
 - [x] 2.1 Define core TypeScript types for seller product entries, catalog products, seller product links, and opaque seller product references.
-- [ ] 2.2 Keep database row types separate from domain/application types and define adapter translation boundaries.
-- [ ] 2.3 Add compile-time or focused unit coverage that exercises the intended model shapes without requiring SQLite.
-- [ ] 2.4 Verify data model setup with `npm test -- --run src/domain`.
+- [x] 2.2 Keep database row types separate from domain/application types and define adapter translation boundaries.
+- [x] 2.3 Add compile-time or focused unit coverage that exercises the intended model shapes without requiring SQLite.
+- [x] 2.4 Verify data model setup with `npm test -- --run src/domain`.
 
 ## 3. Domain Normalization
 
