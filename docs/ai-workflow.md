@@ -7,7 +7,7 @@ This project uses AI as a planning and implementation assistant, with decisions 
 - Extracted and summarized the take-home assessment and interview guideline documents.
 - Inspected the supplied SQLite database and JSON import file to ground design decisions in actual data.
 - Ran a grilling process before coding to resolve intentional ambiguities.
-- Captured durable decisions as ADRs and domain language in `CONTEXT.md`.
+- Captured durable decisions in `docs/decisions.md` and domain language in `CONTEXT.md`.
 - Planned a TDD workflow with explicit testing boundaries before implementation.
 - Challenged scope-expanding ideas such as dry-run-by-default and deferred them when they were not required by the exercise.
 
@@ -18,4 +18,3 @@ AI suggestions are treated as proposals, not accepted facts. Decisions were chec
 ## Confidentiality
 
 The public repository should not include the supplied assessment PDFs, original SQLite database, or original import file. Tests and examples should use synthetic fixtures that mirror the necessary schema and edge cases.
-
