@@ -54,6 +54,25 @@ The expected stack is Node.js, TypeScript, Vitest, `tsx`, `better-sqlite3`, and 
 
    Alternative considered: write each entry independently. That can preserve partial progress on database failures, but weakens predictability for a command that reports one structured import result.
 
+## Data Model
+
+The import implementation will make the model explicit before adding behavior so each layer agrees on the same concepts.
+
+- `SellerProductEntry`: input-facing record read from JSON. It carries seller ownership data, a seller product reference, and descriptive product values from the seller.
+- `CatalogProduct`: canonical product row in the marketplace catalog. It is independent of any one seller and is inserted only when no unambiguous normalized match exists.
+- `SellerProductLink`: persisted association between a seller product entry and a catalog product. It preserves seller name and seller product reference for traceability and idempotency.
+- `ProductIdentity`: derived value used for duplicate detection, built from normalized `Name + Brand`.
+- `SellerEntryIdempotencyKey`: derived value built from `SellerName + seller product reference`.
+- `RejectedEntry`: output record explaining why a seller product entry was not consolidated.
+- `ImportResult`: output DTO printed by the CLI with product counts, seller link counts, and rejected entries.
+
+Model boundaries:
+
+- `SellerProductEntry` is not a canonical product and is not persisted directly as one.
+- `CatalogProduct` is not updated from seller metadata when a match is found.
+- `SellerProductLink` is the only model that records seller ownership of a catalog product.
+- Database row shapes can differ from domain types, but adapters must translate without leaking SQL details into domain logic.
+
 ## Risks / Trade-offs
 
 - Existing database schema may differ from the expected assessment schema -> migrations must be explicit and tests must create representative synthetic schemas.

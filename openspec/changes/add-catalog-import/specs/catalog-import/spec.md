@@ -1,5 +1,20 @@
 ## ADDED Requirements
 
+### Requirement: Catalog import data model
+The system SHALL model seller input, canonical catalog products, seller product links, rejected entries, and import results as distinct concepts.
+
+#### Scenario: Seller product entry matches a catalog product
+- **WHEN** a seller product entry matches an existing catalog product
+- **THEN** the system preserves the canonical catalog product and creates or skips a seller product link instead of treating the seller product entry as a new catalog product
+
+#### Scenario: Seller product link preserves traceability
+- **WHEN** a seller product link is created
+- **THEN** the system stores the seller name and opaque seller product reference associated with the linked catalog product
+
+#### Scenario: Import result hides database internals
+- **WHEN** the CLI prints the import result
+- **THEN** the result reports model-level outcomes and rejected entry reasons without exposing raw SQL rows or migration internals
+
 ### Requirement: CLI import command
 The system SHALL expose a TypeScript CLI import operation runnable as `npm run import -- --db <catalog-db> --input <products-json>`.
 
