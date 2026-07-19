@@ -1,7 +1,7 @@
 ## 1. Project Scaffold and Tooling
 
 - [x] 1.1 Add Node.js/TypeScript project files, `npm run import`, `npm test`, and any needed scripts for Vitest and `tsx`.
-- [ ] 1.2 Add documented dependencies: TypeScript, Vitest, `tsx`, `better-sqlite3`, and matching TypeScript types where needed.
+- [x] 1.2 Add documented dependencies: TypeScript, Vitest, `tsx`, `better-sqlite3`, and matching TypeScript types where needed.
 - [ ] 1.3 Create the initial source and test directory structure for CLI, domain, application, database, migrations, and synthetic fixtures.
 - [ ] 1.4 Verify scaffold with `npm test -- --run`.
 
