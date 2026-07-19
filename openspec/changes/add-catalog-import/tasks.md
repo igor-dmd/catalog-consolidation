@@ -14,10 +14,10 @@
 
 ## 3. Domain Normalization
 
-- [ ] 3.1 Add tests for cleaning values by trimming and collapsing whitespace while preserving source casing.
-- [ ] 3.2 Add tests for normalized product identity comparison by case-insensitive cleaned `Name + Brand`.
-- [ ] 3.3 Implement cleaned value and normalized identity functions, including the product identity value shape and missing or `null` brand as an empty identity component.
-- [ ] 3.4 Verify domain normalization with `npm test -- --run src/domain`.
+- [x] 3.1 Add tests for cleaning values by trimming and collapsing whitespace while preserving source casing.
+- [x] 3.2 Add tests for normalized product identity comparison by case-insensitive cleaned `Name + Brand`.
+- [x] 3.3 Implement cleaned value and normalized identity functions, including the product identity value shape and missing or `null` brand as an empty identity component.
+- [x] 3.4 Verify domain normalization with `npm test -- --run src/domain`.
 
 ## 4. Input Parsing and Validation
 

@@ -4,3 +4,14 @@ export type {
   SellerProductLink,
   SellerProductReference
 } from "./model.js";
+
+export {
+  cleanValue,
+  productIdentitiesEqual,
+  productIdentityFromValues
+} from "./normalization.js";
+
+export type {
+  ProductIdentity,
+  ProductIdentityValues
+} from "./normalization.js";

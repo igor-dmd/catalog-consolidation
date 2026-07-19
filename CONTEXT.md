@@ -24,6 +24,14 @@ _Avoid_: Numeric seller product ID, internal product ID
 A seller product entry that represents an existing catalog product and therefore should not create a new catalog product row.
 _Avoid_: Similar product, repeated item
 
+**Cleaned Value**:
+Source text after trimming leading and trailing whitespace and collapsing repeated internal whitespace, while preserving the source casing.
+_Avoid_: Normalized value, sanitized value
+
+**Product Identity**:
+The normalized name and brand used to decide whether a seller product entry refers to an existing catalog product. It is compared case-insensitively and is distinct from the cleaned values stored on new catalog products.
+_Avoid_: Seller product reference, seller entry idempotency key
+
 **Idempotent Import**:
 An import that can be run repeatedly with the same seller product entries without creating additional catalog products or seller product links after the first successful run.
 _Avoid_: Retry-safe import, duplicate-safe run
