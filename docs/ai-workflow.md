@@ -21,7 +21,7 @@ OpenSpec changes should describe one cohesive product or behavior change, not on
 
 For example, `add-catalog-import` remains one change because project setup, normalization, validation, migrations, the import use case, the CLI adapter, and README updates all support the same required catalog import operation.
 
-Implementation should still proceed incrementally. Work through the OpenSpec task list one group at a time, write or update tests for that slice, verify it, and only then mark the task complete and move to the next slice.
+Implementation should still proceed incrementally. Work through the OpenSpec task list one relevant task slice at a time, write or update tests for that slice, verify it, and only then mark the task complete. After completing a relevant task slice, stop for developer review before moving to the next unchecked task.
 
 Split future OpenSpec changes only when the resulting pieces are independently meaningful capabilities or requirement changes that can be reviewed, implemented, and validated on their own.
 
