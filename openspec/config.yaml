@@ -1,0 +1,19 @@
+schema: spec-driven
+
+context: |
+  Project: VTEX catalog consolidation take-home assessment.
+  Objective: build a TypeScript CLI that imports seller product entries from JSON into an existing SQLite catalog database.
+  Tech stack: Node.js, TypeScript, Vitest, tsx, better-sqlite3, hand-written validation.
+  Architecture: thin CLI adapter over an import use case; domain logic and database adapter stay testable outside command parsing.
+  TDD seams: pure normalization/validation unit tests, import use case integration tests with temporary SQLite, thin CLI smoke tests.
+  Confidentiality: do not commit supplied PDFs, original catalog.db, or original ProductEntry.json; use synthetic fixtures in the repository.
+  Scope: implement only the required import operation. Defer dry-run, validate-only, inspect, rollback, and explain-match.
+  Source artifacts: read docs/implementation-brief.md, CONTEXT.md, docs/ai-workflow.md, docs/interaction-log.md, and docs/adr/ before proposing or applying changes.
+
+rules:
+  proposal:
+    - State non-goals explicitly to prevent scope creep.
+    - Reference relevant ADRs instead of restating every decision.
+  tasks:
+    - Break work into TDD-friendly vertical slices.
+    - Include verification commands for each implementation slice.
