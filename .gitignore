@@ -1,0 +1,12 @@
+node_modules/
+dist/
+coverage/
+.env
+
+# Keep supplied/local assessment assets out of the public repository.
+*.db
+*.sqlite
+*.sqlite3
+ProductEntry.json
+*.pdf
+
