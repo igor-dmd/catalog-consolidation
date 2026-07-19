@@ -1,0 +1,11 @@
+{
+  "name": "catalog-consolidation",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "import": "tsx src/cli/import.ts",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  }
+}
