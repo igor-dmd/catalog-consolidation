@@ -56,15 +56,18 @@ The expected stack is Node.js, TypeScript, Vitest, `tsx`, `better-sqlite3`, and 
 
 ## Data Model
 
-The import implementation will make the model explicit before adding behavior so each layer agrees on the same concepts.
+The import implementation will introduce model shapes when their behavior slice needs them, so names are grounded in real call sites instead of speculative abstractions.
 
 - `SellerProductEntry`: input-facing record read from JSON. It carries seller ownership data, a seller product reference, and descriptive product values from the seller.
 - `CatalogProduct`: canonical product row in the marketplace catalog. It is independent of any one seller and is inserted only when no unambiguous normalized match exists.
 - `SellerProductLink`: persisted association between a seller product entry and a catalog product. It preserves seller name and seller product reference for traceability and idempotency.
-- `ProductIdentity`: derived value used for duplicate detection, built from normalized `Name + Brand`.
-- `SellerEntryIdempotencyKey`: derived value built from `SellerName + seller product reference`.
-- `RejectedEntry`: output record explaining why a seller product entry was not consolidated.
-- `ImportResult`: output DTO printed by the CLI with product counts, seller link counts, and rejected entries.
+
+Derived values and output DTOs are added with the behavior that produces them:
+
+- Product identity belongs with normalization behavior and is built from normalized `Name + Brand`.
+- Seller entry idempotency keys belong with duplicate detection and link idempotency behavior.
+- Rejected entry records belong with validation and matching rejection behavior.
+- Import results belong with the import use case and CLI output behavior.
 
 Model boundaries:
 

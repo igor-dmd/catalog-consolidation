@@ -7,7 +7,7 @@
 
 ## 2. Data Model
 
-- [ ] 2.1 Define TypeScript types for seller product entries, catalog products, seller product links, product identity, seller entry idempotency keys, rejected entries, and import results.
+- [x] 2.1 Define core TypeScript types for seller product entries, catalog products, seller product links, and opaque seller product references.
 - [ ] 2.2 Keep database row types separate from domain/application types and define adapter translation boundaries.
 - [ ] 2.3 Add compile-time or focused unit coverage that exercises the intended model shapes without requiring SQLite.
 - [ ] 2.4 Verify data model setup with `npm test -- --run src/domain`.
@@ -16,15 +16,15 @@
 
 - [ ] 3.1 Add tests for cleaning values by trimming and collapsing whitespace while preserving source casing.
 - [ ] 3.2 Add tests for normalized product identity comparison by case-insensitive cleaned `Name + Brand`.
-- [ ] 3.3 Implement cleaned value and normalized identity functions, including missing or `null` brand as an empty identity component.
+- [ ] 3.3 Implement cleaned value and normalized identity functions, including the product identity value shape and missing or `null` brand as an empty identity component.
 - [ ] 3.4 Verify domain normalization with `npm test -- --run src/domain`.
 
 ## 4. Input Parsing and Validation
 
 - [ ] 4.1 Add tests for unreadable or malformed JSON input failing before import.
 - [ ] 4.2 Add tests for parseable input with rejected entries that include identifying context and reasons.
-- [ ] 4.3 Add tests for duplicate `SellerName + seller product reference` values inside one input file.
-- [ ] 4.4 Implement hand-written parsing and validation for seller product entries.
+- [ ] 4.3 Add tests for duplicate `SellerName + seller product reference` values inside one input file, including the seller entry idempotency key shape.
+- [ ] 4.4 Implement hand-written parsing and validation for seller product entries, including rejected entry output shape.
 - [ ] 4.5 Verify input behavior with `npm test -- --run src/input`.
 
 ## 5. SQLite Migrations
@@ -40,7 +40,7 @@
 - [ ] 6.2 Add integration tests for inserting new catalog products with cleaned source values.
 - [ ] 6.3 Add integration tests for brandless identity, ambiguous catalog matches, and rejected entries.
 - [ ] 6.4 Add integration tests for first-run link creation and repeated-run idempotency.
-- [ ] 6.5 Implement the import use case with migrations before import and valid-entry writes inside one transaction.
+- [ ] 6.5 Implement the import use case with migrations before import, valid-entry writes inside one transaction, and the import result output shape.
 - [ ] 6.6 Verify import behavior with `npm test -- --run src/import`.
 
 ## 7. CLI Adapter
