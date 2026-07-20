@@ -1,5 +1,8 @@
 export type {
   CatalogProduct,
+  RejectedSellerProductEntry,
+  RejectedSellerProductEntryReason,
+  RejectedSellerProductEntryReasonCode,
   SellerProductEntry,
   SellerProductLink,
   SellerProductReference

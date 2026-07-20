@@ -1,6 +1,7 @@
 import Database from "better-sqlite3";
 import { runCatalogMigrations } from "../db/index.js";
 import { importCatalogProducts, type CatalogImportResult } from "../import/index.js";
+import { InputFileJsonError, InputFileReadError } from "../input/errors.js";
 import { parseSellerProductEntriesFromFile } from "../input/input-file.js";
 import { CliArgumentError } from "./errors.js";
 
@@ -34,6 +35,11 @@ export function runImportCli(argv: string[], io: CliIo = processIo): number {
     return 0;
   } catch (error) {
     if (error instanceof CliArgumentError) {
+      io.writeStderr(error.message);
+      return 1;
+    }
+
+    if (error instanceof InputFileJsonError || error instanceof InputFileReadError) {
       io.writeStderr(error.message);
       return 1;
     }

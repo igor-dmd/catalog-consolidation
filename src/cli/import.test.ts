@@ -31,6 +31,37 @@ describe("import CLI", () => {
     ]);
   });
 
+  it("fails when the import file cannot be read", () => {
+    const tempDir = mkdtempSync(join(tmpdir(), "catalog-import-cli-"));
+    const dbPath = join(tempDir, "catalog.db");
+    const inputPath = join(tempDir, "missing-products.json");
+    const io = createCliIo();
+
+    const exitCode = runImportCli(["--db", dbPath, "--input", inputPath], io);
+
+    expect(exitCode).toBe(1);
+    expect(io.stdout).toEqual([]);
+    expect(io.stderr).toEqual([
+      `Could not read input file: ${inputPath}`
+    ]);
+  });
+
+  it("fails when the import file contains malformed JSON", () => {
+    const tempDir = mkdtempSync(join(tmpdir(), "catalog-import-cli-"));
+    const dbPath = join(tempDir, "catalog.db");
+    const inputPath = join(tempDir, "malformed-products.json");
+    writeFileSync(inputPath, "{ not json", "utf8");
+    const io = createCliIo();
+
+    const exitCode = runImportCli(["--db", dbPath, "--input", inputPath], io);
+
+    expect(exitCode).toBe(1);
+    expect(io.stdout).toEqual([]);
+    expect(io.stderr).toEqual([
+      `Input file is not valid JSON: ${inputPath}`
+    ]);
+  });
+
   it("runs migrations, imports products, and prints structured JSON", () => {
     const tempDir = mkdtempSync(join(tmpdir(), "catalog-import-cli-"));
     const dbPath = join(tempDir, "catalog.db");

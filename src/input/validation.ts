@@ -1,8 +1,10 @@
-import type { SellerProductEntry } from "../domain/index.js";
-import { InputValidationInvariantError } from "./errors.js";
 import type {
   RejectedSellerProductEntry,
   RejectedSellerProductEntryReason,
+  SellerProductEntry
+} from "../domain/index.js";
+import { InputValidationInvariantError } from "./errors.js";
+import type {
   ValidatedSellerProductInput
 } from "./model.js";
 

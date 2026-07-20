@@ -1,24 +1,9 @@
-import type { SellerProductEntry } from "../domain/index.js";
+import type {
+  RejectedSellerProductEntry,
+  SellerProductEntry
+} from "../domain/index.js";
 
 export interface ValidatedSellerProductInput {
   entries: SellerProductEntry[];
   entriesRejected: RejectedSellerProductEntry[];
 }
-
-export interface RejectedSellerProductEntry {
-  sellerName?: string;
-  sellerProductReference?: string;
-  reasons: RejectedSellerProductEntryReason[];
-}
-
-export interface RejectedSellerProductEntryReason {
-  field: string;
-  code: RejectedSellerProductEntryReasonCode;
-  message: string;
-}
-
-export type RejectedSellerProductEntryReasonCode =
-  | "required"
-  | "invalid_type"
-  | "duplicate_seller_entry"
-  | "ambiguous_match";

@@ -3,6 +3,7 @@ import {
   cleanValue,
   classifyCatalogMatch,
   type CatalogProduct,
+  type RejectedSellerProductEntry,
   type SellerProductEntry,
   type SellerProductLink
 } from "../domain/index.js";
@@ -12,7 +13,6 @@ import {
   insertSellerProductLink,
   listCatalogProducts
 } from "../db/index.js";
-import type { RejectedSellerProductEntry } from "../input/model.js";
 import { CatalogImportWriteError } from "./errors.js";
 
 export interface CatalogImportResult {
