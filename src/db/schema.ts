@@ -1,5 +1,3 @@
-import type { SellerProductReference } from "../domain/index.js";
-
 export interface CatalogProductRow {
   Id: number;
   Name: string;
@@ -11,7 +9,7 @@ export interface SellerProductLinkRow {
   Id: number;
   ProductId: number;
   SellerName: string;
-  SellerProductId: SellerProductReference;
+  SellerProductId: string;
 }
 
 export interface CatalogProductInsertParams {
@@ -23,5 +21,5 @@ export interface CatalogProductInsertParams {
 export interface SellerProductLinkInsertParams {
   ProductId: number;
   SellerName: string;
-  SellerProductId: SellerProductReference;
+  SellerProductId: string;
 }

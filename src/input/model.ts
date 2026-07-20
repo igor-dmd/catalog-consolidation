@@ -18,4 +18,4 @@ export interface RejectedSellerProductEntryReason {
   message: string;
 }
 
-export type RejectedSellerProductEntryReasonCode = "required" | "invalid_type";
+export type RejectedSellerProductEntryReasonCode = "required" | "invalid_type" | "duplicate";

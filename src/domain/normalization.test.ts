@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  classifyCatalogMatch,
   cleanValue,
-  productIdentitiesEqual,
-  productIdentityFromValues
 } from "./normalization.js";
 
 describe("domain normalization", () => {
@@ -11,43 +10,104 @@ describe("domain normalization", () => {
     expect(cleanValue("  iPhone   Pro  MAX  ")).toBe("iPhone Pro MAX");
   });
 
-  it("builds product identities from case-insensitive cleaned name and brand", () => {
-    expect(productIdentityFromValues({
-      name: "  Camera   Canon EOS R6 ",
-      brand: " CANON "
-    })).toEqual({
-      normalizedName: "camera canon eos r6",
-      normalizedBrand: "canon"
-    });
-  });
-
-  it("compares product identities by normalized name and brand", () => {
-    const sellerIdentity = productIdentityFromValues({
+  it("matches a seller product entry to a catalog product by normalized name and brand", () => {
+    expect(classifyCatalogMatch({
+      sellerName: "Camera Seller",
+      sellerProductReference: "camera-r6-001",
       name: "  CAMERA Canon   EOS R6 ",
-      brand: " Canon "
+      brand: " Canon ",
+      category: "Photography"
+    }, [
+      {
+        id: 7,
+        name: "camera canon eos r6",
+        brand: "CANON",
+        category: null
+      }
+    ])).toEqual({
+      kind: "matched",
+      catalogProduct: {
+        id: 7,
+        name: "camera canon eos r6",
+        brand: "CANON",
+        category: null
+      }
     });
-    const catalogIdentity = productIdentityFromValues({
-      name: "camera canon eos r6",
-      brand: "CANON"
-    });
-
-    expect(productIdentitiesEqual(sellerIdentity, catalogIdentity)).toBe(true);
   });
 
-  it("treats missing or null brand as an empty identity component", () => {
-    expect(productIdentityFromValues({
-      name: " USB-C Cable ",
-      brand: null
-    })).toEqual({
-      normalizedName: "usb-c cable",
-      normalizedBrand: ""
-    });
+  it("returns no match when no catalog product has the same product identity", () => {
+    expect(classifyCatalogMatch({
+      sellerName: "Cable Seller",
+      sellerProductReference: "cable-001",
+      name: "USB-C Cable",
+      brand: "Acme",
+      category: null
+    }, [
+      {
+        id: 7,
+        name: "USB-C Cable",
+        brand: "Other Brand",
+        category: null
+      }
+    ])).toEqual({ kind: "noMatch" });
+  });
 
-    expect(productIdentityFromValues({
-      name: " USB-C Cable "
-    })).toEqual({
-      normalizedName: "usb-c cable",
-      normalizedBrand: ""
+  it("returns ambiguous when multiple catalog products have the same product identity", () => {
+    const catalogProducts = [
+      {
+        id: 7,
+        name: "USB-C Cable",
+        brand: "Acme",
+        category: "Accessories"
+      },
+      {
+        id: 8,
+        name: " usb-c   cable ",
+        brand: " ACME ",
+        category: "Cables"
+      }
+    ];
+
+    expect(classifyCatalogMatch({
+      sellerName: "Cable Seller",
+      sellerProductReference: "cable-001",
+      name: "USB-C Cable",
+      brand: "acme",
+      category: null
+    }, catalogProducts)).toEqual({
+      kind: "ambiguous",
+      catalogProducts
+    });
+  });
+
+  it("matches brandless seller product entries only to brandless catalog products", () => {
+    expect(classifyCatalogMatch({
+      sellerName: "Cable Seller",
+      sellerProductReference: "cable-001",
+      name: " USB-C Cable ",
+      brand: null,
+      category: null
+    }, [
+      {
+        id: 7,
+        name: "USB-C Cable",
+        brand: "Acme",
+        category: null
+      },
+      {
+        id: 8,
+        name: "USB-C Cable",
+        brand: null,
+        category: null
+      }
+    ])).toEqual({
+      kind: "matched",
+      catalogProduct: {
+        id: 8,
+        name: "USB-C Cable",
+        brand: null,
+        category: null
+      }
     });
   });
 });

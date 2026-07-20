@@ -10,19 +10,34 @@ type FieldValidation<T> =
   | { ok: true; value: T }
   | { ok: false; reason: RejectedSellerProductEntryReason };
 
+interface SellerEntryIdempotencyKey {
+  sellerName: string;
+  sellerProductReference: string;
+}
+
 export function validateSellerProductInput(input: unknown): ParsedSellerProductInput {
   const sourceEntries = Array.isArray(input) ? input : [];
   const entries: SellerProductEntry[] = [];
   const entriesRejected: RejectedSellerProductEntry[] = [];
+  const acceptedSellerEntryKeys = new Set<string>();
 
   sourceEntries.forEach((sourceEntry, sourceIndex) => {
     const parsedEntry = validateSellerProductEntry(sourceEntry, sourceIndex);
 
-    if ("entry" in parsedEntry) {
-      entries.push(parsedEntry.entry);
-    } else {
+    if ("rejectedEntry" in parsedEntry) {
       entriesRejected.push(parsedEntry.rejectedEntry);
+      return;
     }
+
+    const sellerEntryKey = sellerEntryIdempotencyKeyFromEntry(parsedEntry.entry);
+
+    if (acceptedSellerEntryKeys.has(serializeSellerEntryIdempotencyKey(sellerEntryKey))) {
+      entriesRejected.push(rejectDuplicateSellerEntry(parsedEntry.entry, sourceIndex));
+      return;
+    }
+
+    acceptedSellerEntryKeys.add(serializeSellerEntryIdempotencyKey(sellerEntryKey));
+    entries.push(parsedEntry.entry);
   });
 
   return { entries, entriesRejected };
@@ -132,6 +147,37 @@ function collectReasons(
   validations: Array<FieldValidation<unknown>>
 ): RejectedSellerProductEntryReason[] {
   return validations.flatMap((validation) => validation.ok ? [] : [validation.reason]);
+}
+
+function sellerEntryIdempotencyKeyFromEntry(
+  entry: SellerProductEntry
+): SellerEntryIdempotencyKey {
+  return {
+    sellerName: entry.sellerName,
+    sellerProductReference: entry.sellerProductReference
+  };
+}
+
+function serializeSellerEntryIdempotencyKey(key: SellerEntryIdempotencyKey): string {
+  return JSON.stringify([key.sellerName, key.sellerProductReference]);
+}
+
+function rejectDuplicateSellerEntry(
+  entry: SellerProductEntry,
+  sourceIndex: number
+): RejectedSellerProductEntry {
+  return {
+    sourceIndex,
+    sellerName: entry.sellerName,
+    sellerProductReference: entry.sellerProductReference,
+    reasons: [
+      {
+        field: "SellerProductId",
+        code: "duplicate",
+        message: "SellerName + SellerProductId must be unique within the input file."
+      }
+    ]
+  };
 }
 
 function toSourceEntryObject(sourceEntry: unknown): Record<string, unknown> {

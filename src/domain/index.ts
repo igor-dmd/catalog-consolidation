@@ -6,12 +6,10 @@ export type {
 } from "./model.js";
 
 export {
+  classifyCatalogMatch,
   cleanValue,
-  productIdentitiesEqual,
-  productIdentityFromValues
 } from "./normalization.js";
 
 export type {
-  ProductIdentity,
-  ProductIdentityValues
+  CatalogMatchClassification
 } from "./normalization.js";

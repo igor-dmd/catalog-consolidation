@@ -91,4 +91,61 @@ describe("seller product input validation", () => {
       ]
     });
   });
+
+  it("rejects duplicate seller entry idempotency keys after the first occurrence", () => {
+    expect(validateSellerProductInput([
+      {
+        SellerName: "Camera Seller",
+        SellerProductId: "camera-r6-001",
+        Name: "Camera Canon EOS R6",
+        Brand: "Canon",
+        Category: "Photography"
+      },
+      {
+        SellerName: "Camera Seller",
+        SellerProductId: "camera-r6-001",
+        Name: "Duplicate Camera Canon EOS R6",
+        Brand: "Canon",
+        Category: "Photography"
+      },
+      {
+        SellerName: "Camera Seller",
+        SellerProductId: "camera-r6-002",
+        Name: "Camera Canon EOS R7",
+        Brand: "Canon",
+        Category: "Photography"
+      }
+    ])).toEqual({
+      entries: [
+        {
+          sellerName: "Camera Seller",
+          sellerProductReference: "camera-r6-001",
+          name: "Camera Canon EOS R6",
+          brand: "Canon",
+          category: "Photography"
+        },
+        {
+          sellerName: "Camera Seller",
+          sellerProductReference: "camera-r6-002",
+          name: "Camera Canon EOS R7",
+          brand: "Canon",
+          category: "Photography"
+        }
+      ],
+      entriesRejected: [
+        {
+          sourceIndex: 1,
+          sellerName: "Camera Seller",
+          sellerProductReference: "camera-r6-001",
+          reasons: [
+            {
+              field: "SellerProductId",
+              code: "duplicate",
+              message: "SellerName + SellerProductId must be unique within the input file."
+            }
+          ]
+        }
+      ]
+    });
+  });
 });
