@@ -52,7 +52,8 @@
 
 ## 8. Documentation and Final Verification
 
-- [ ] 8.1 Update README usage notes with the import command, expected output shape, and confidentiality guidance for external assessment assets.
-- [ ] 8.2 Run the full test suite with `npm test -- --run`.
-- [ ] 8.3 Validate the OpenSpec change with `openspec validate add-catalog-import --type change --strict --no-interactive`.
-- [ ] 8.4 Confirm readiness with `openspec status --change add-catalog-import`.
+- [x] 8.1 Strengthen critical functional CLI coverage for migration, import, structured output, and repeated-run idempotency with `npm test -- --run src/cli`.
+- [x] 8.2 Update README usage notes with setup, test commands, the import command, input shape, expected output shape, behavior notes, and confidentiality guidance for external assessment assets.
+- [x] 8.3 Run the full test suite with `npm test -- --run`.
+- [x] 8.4 Validate the OpenSpec change with `openspec validate add-catalog-import --type change --strict --no-interactive`.
+- [x] 8.5 Confirm readiness with `openspec status --change add-catalog-import`.

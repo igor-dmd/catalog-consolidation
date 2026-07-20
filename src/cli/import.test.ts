@@ -134,6 +134,46 @@ describe("import CLI", () => {
     } finally {
       verificationDb.close();
     }
+
+    const repeatedRunIo = createCliIo();
+
+    const repeatedRunExitCode = runImportCli(["--db", dbPath, "--input", inputPath], repeatedRunIo);
+
+    expect(repeatedRunExitCode).toBe(0);
+    expect(repeatedRunIo.stderr).toEqual([]);
+    expect(repeatedRunIo.stdout).toHaveLength(1);
+    expect(JSON.parse(repeatedRunIo.stdout[0] ?? "")).toEqual({
+      productsInserted: 0,
+      productsMatched: 0,
+      sellerLinksCreated: 0,
+      sellerLinksSkipped: 2,
+      entriesRejected: [
+        {
+          sellerName: "Rejected Seller",
+          sellerProductReference: "missing-name-001",
+          reasons: [
+            {
+              field: "Name",
+              code: "required",
+              message: "Name must be a non-empty string."
+            }
+          ]
+        }
+      ]
+    });
+
+    const repeatedRunVerificationDb = new Database(dbPath, { readonly: true });
+
+    try {
+      expect(repeatedRunVerificationDb.prepare("SELECT COUNT(*) AS count FROM Products").get()).toEqual({
+        count: 2
+      });
+      expect(repeatedRunVerificationDb.prepare("SELECT COUNT(*) AS count FROM SellerProducts").get()).toEqual({
+        count: 2
+      });
+    } finally {
+      repeatedRunVerificationDb.close();
+    }
   });
 });
 
