@@ -1,14 +1,10 @@
 import type {
   CatalogProduct,
+  ProductIdentity,
   SellerProductEntry
 } from "./model.js";
 
-interface ProductIdentity {
-  normalizedName: string;
-  normalizedBrand: string;
-}
-
-interface ProductIdentityValues {
+interface ProductIdentitySource {
   name: string;
   brand?: string | null;
 }
@@ -26,9 +22,9 @@ export function classifyCatalogMatch(
   sellerProductEntry: SellerProductEntry,
   catalogProducts: CatalogProduct[]
 ): CatalogMatchClassification {
-  const sellerProductIdentity = productIdentityFromValues(sellerProductEntry);
+  const sellerProductIdentity = productIdentityFromSource(sellerProductEntry);
   const catalogProductMatches = catalogProducts.filter((catalogProduct) =>
-    productIdentitiesEqual(sellerProductIdentity, productIdentityFromValues(catalogProduct))
+    productIdentitiesEqual(sellerProductIdentity, productIdentityFromSource(catalogProduct))
   );
 
   if (catalogProductMatches.length === 0) {
@@ -42,10 +38,10 @@ export function classifyCatalogMatch(
   return { kind: "ambiguous", catalogProducts: catalogProductMatches };
 }
 
-function productIdentityFromValues(values: ProductIdentityValues): ProductIdentity {
+function productIdentityFromSource(source: ProductIdentitySource): ProductIdentity {
   return {
-    normalizedName: normalizeForIdentityComparison(values.name),
-    normalizedBrand: normalizeForIdentityComparison(values.brand ?? "")
+    normalizedName: normalizeForIdentityComparison(source.name),
+    normalizedBrand: normalizeForIdentityComparison(source.brand ?? "")
   };
 }
 

@@ -1,5 +1,6 @@
 export type {
   CatalogProduct,
+  ProductIdentity,
   RejectedSellerProductEntry,
   RejectedSellerProductEntryReason,
   RejectedSellerProductEntryReasonCode,

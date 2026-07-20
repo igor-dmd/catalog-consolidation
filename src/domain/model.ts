@@ -21,6 +21,11 @@ export interface SellerProductLink {
   sellerProductReference: SellerProductReference;
 }
 
+export interface ProductIdentity {
+  normalizedName: string;
+  normalizedBrand: string;
+}
+
 export interface RejectedSellerProductEntry {
   sellerName?: string;
   sellerProductReference?: string;
