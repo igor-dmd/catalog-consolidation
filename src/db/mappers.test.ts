@@ -65,7 +65,7 @@ describe("database row mappers", () => {
     })).toEqualTypeOf<CatalogProductInsertParams>();
   });
 
-  it("maps domain links to database params while preserving opaque seller references", () => {
+  it("maps domain links to database params while preserving seller product references", () => {
     const link: SellerProductLink = {
       catalogProductId: 7,
       sellerName: "Seller A",

@@ -17,7 +17,7 @@ This document captures the durable design decisions for the catalog consolidatio
 
 ## Seller Links
 
-- The seller product reference from the input is stored as opaque text. The supplied schema uses `SellerProductId INTEGER`, but the input uses UUID strings, so preserving traceability requires adapting that column.
+- The seller product reference from the input is stored as text. The supplied schema uses `SellerProductId INTEGER`, but the input uses UUID strings, so preserving traceability requires adapting that column.
 - Imports are idempotent. Re-running the same input must not create additional products or seller product links.
 - `SellerName + seller product reference` is the seller entry idempotency key.
 - Duplicate seller references inside the same input file are rejected and reported rather than silently chosen.

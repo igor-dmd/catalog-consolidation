@@ -9,7 +9,7 @@ The system SHALL model seller input, canonical catalog products, seller product 
 
 #### Scenario: Seller product link preserves traceability
 - **WHEN** a seller product link is created
-- **THEN** the system stores the seller name and opaque seller product reference associated with the linked catalog product
+- **THEN** the system stores the seller name and seller product reference associated with the linked catalog product
 
 #### Scenario: Import result hides database internals
 - **WHEN** the CLI prints the import result
@@ -65,7 +65,7 @@ The system SHALL apply explicit SQLite migrations before importing seller produc
 
 #### Scenario: Seller product reference storage is migrated
 - **WHEN** the import command runs against a database that has not yet received the import migrations
-- **THEN** the system applies migrations that allow opaque text seller product references and uniqueness protection for seller links
+- **THEN** the system applies migrations that allow text seller product references and uniqueness protection for seller links
 
 #### Scenario: Migration idempotency
 - **WHEN** the import command runs more than once against the same database

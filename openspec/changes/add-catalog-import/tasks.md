@@ -7,7 +7,7 @@
 
 ## 2. Data Model
 
-- [x] 2.1 Define core TypeScript types for seller product entries, catalog products, seller product links, and opaque seller product references.
+- [x] 2.1 Define core TypeScript types for seller product entries, catalog products, seller product links, and seller product references.
 - [x] 2.2 Keep database row types separate from domain/application types and define adapter translation boundaries.
 - [x] 2.3 Add compile-time or focused unit coverage that exercises the intended model shapes without requiring SQLite.
 - [x] 2.4 Verify data model setup with `npm test -- --run src/domain`.
@@ -24,12 +24,12 @@
 - [x] 4.1 Add unreadable or malformed JSON input behavior with focused tests, minimal implementation, and `npm test -- --run src/input`.
 - [x] 4.2 Add parseable invalid-entry rejection behavior with focused tests, minimal implementation, identifying context, reasons, and `npm test -- --run src/input`.
 - [x] 4.3 Add duplicate `SellerName + seller product reference` behavior with focused tests, minimal implementation, seller entry idempotency key shape, and `npm test -- --run src/input`.
-- [ ] 4.4 Verify input behavior with `npm test -- --run src/input`.
+- [x] 4.4 Verify input behavior with `npm test -- --run src/input`.
 
 ## 5. SQLite Migrations
 
-- [ ] 5.1 Add synthetic SQLite schema fixture behavior with focused tests, representative assessment catalog tables, and `npm test -- --run src/db`.
-- [ ] 5.2 Add opaque text seller product reference migration behavior with focused tests, SQL migration implementation, and `npm test -- --run src/db`.
+- [x] 5.1 Add synthetic SQLite schema fixture behavior with focused tests, representative assessment catalog tables, and `npm test -- --run src/db`.
+- [x] 5.2 Add text seller product reference migration behavior with focused tests, SQL migration implementation, and `npm test -- --run src/db`.
 - [ ] 5.3 Add seller link uniqueness migration behavior with focused tests, SQL migration implementation, and `npm test -- --run src/db`.
 - [ ] 5.4 Add migration idempotency behavior with focused tests, migration runner implementation, and `npm test -- --run src/db`.
 - [ ] 5.5 Verify migrations with `npm test -- --run src/db`.

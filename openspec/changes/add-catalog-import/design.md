@@ -36,7 +36,7 @@ The expected stack is Node.js, TypeScript, Vitest, `tsx`, `better-sqlite3`, and 
 
    Alternative considered: add persisted normalized columns or SQLite expression indexes immediately. That may help performance later, but it expands schema changes beyond the exercise's needs.
 
-3. Treat seller product references as opaque text.
+3. Store seller product references as text.
 
    The migration layer adapts seller product link storage so imported seller product references can be string values, including UUIDs. A uniqueness constraint on seller name plus seller product reference enforces idempotency at the database boundary.
 

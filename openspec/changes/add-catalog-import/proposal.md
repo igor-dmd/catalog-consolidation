@@ -7,7 +7,7 @@ The project needs the required catalog consolidation workflow: importing seller 
 - Add a TypeScript CLI operation exposed as `npm run import -- --db ./path/to/catalog.db --input ./path/to/products.json`.
 - Parse and validate seller product entry JSON input, rejecting malformed files and invalid entries with structured reasons.
 - Normalize product identity by cleaned `Name + Brand` so imports can match existing catalog products or insert new catalog products.
-- Apply explicit SQLite migrations before import, including support for opaque text seller product references and uniqueness protection for seller links.
+- Apply explicit SQLite migrations before import, including support for text seller product references and uniqueness protection for seller links.
 - Import valid entries in a transaction, preserving idempotency across repeated runs.
 - Print a structured JSON result with product, seller link, and rejection counts.
 - Non-goals: dry-run, validate-only, inspect, rollback, explain-match, fuzzy matching, synonym translation, and seller-driven updates to existing catalog product metadata.

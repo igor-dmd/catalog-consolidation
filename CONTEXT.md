@@ -17,7 +17,7 @@ The association showing that a seller offers a specific catalog product. It pres
 _Avoid_: Duplicate, seller item
 
 **Seller Product Reference**:
-The external identifier received for a seller product entry. It is stored as an opaque reference because different import sources may use different identifier formats.
+The external identifier received for a seller product entry. It is stored as text because different import sources may use different identifier formats.
 _Avoid_: Numeric seller product ID, internal product ID
 
 **Duplicate Product**:
