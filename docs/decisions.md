@@ -41,6 +41,7 @@ This document captures the durable design decisions for the catalog consolidatio
 - Database schema types live in `src/db` and reflect SQLite table/column shapes.
 - Translation between database rows and domain models happens only in DB adapter mapper functions.
 - Domain and application modules must not import database row types directly.
+- Runtime errors are owned by the layer that raises them. Use specific error classes for domain, input, database, CLI, and application invariants instead of generic `Error`, so failures remain identifiable at adapter boundaries.
 
 ## Interface And Scope
 
@@ -53,6 +54,7 @@ This document captures the durable design decisions for the catalog consolidatio
 ## Testing
 
 - Use TDD.
+- Exported source functions are tested directly by default. Exceptions are allowed for internal module plumbing only when the higher public seam is named and covered by tests.
 - Test pure normalization and validation functions for happy paths and edge cases.
 - Test the import use case with a temporary SQLite database and fixture JSON.
 - Keep CLI tests thin: argument parsing, exit code, and output shape.

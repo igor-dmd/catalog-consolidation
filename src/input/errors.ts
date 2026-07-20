@@ -11,3 +11,10 @@ export class InputFileJsonError extends Error {
     this.name = InputFileJsonError.name;
   }
 }
+
+export class InputValidationInvariantError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = InputValidationInvariantError.name;
+  }
+}

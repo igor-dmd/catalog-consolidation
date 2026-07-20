@@ -22,7 +22,7 @@
 ## 4. Input Parsing and Validation
 
 - [x] 4.1 Add unreadable or malformed JSON input behavior with focused tests, minimal implementation, and `npm test -- --run src/input`.
-- [ ] 4.2 Add parseable invalid-entry rejection behavior with focused tests, minimal implementation, identifying context, reasons, and `npm test -- --run src/input`.
+- [x] 4.2 Add parseable invalid-entry rejection behavior with focused tests, minimal implementation, identifying context, reasons, and `npm test -- --run src/input`.
 - [ ] 4.3 Add duplicate `SellerName + seller product reference` behavior with focused tests, minimal implementation, seller entry idempotency key shape, and `npm test -- --run src/input`.
 - [ ] 4.4 Verify input behavior with `npm test -- --run src/input`.
 

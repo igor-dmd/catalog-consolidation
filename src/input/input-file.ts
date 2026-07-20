@@ -1,15 +1,13 @@
 import { readFileSync } from "node:fs";
 import { InputFileJsonError, InputFileReadError } from "./errors.js";
-
-export interface ParsedSellerProductInput {
-  raw: unknown;
-}
+import type { ParsedSellerProductInput } from "./model.js";
+import { validateSellerProductInput } from "./validation.js";
 
 export function parseSellerProductEntriesFromFile(
   inputPath: string
 ): ParsedSellerProductInput {
   const contents = readInputFile(inputPath);
-  return { raw: parseInputJson(inputPath, contents) };
+  return validateSellerProductInput(parseInputJson(inputPath, contents));
 }
 
 function readInputFile(inputPath: string): string {

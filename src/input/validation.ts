@@ -1,0 +1,143 @@
+import type { SellerProductEntry } from "../domain/index.js";
+import { InputValidationInvariantError } from "./errors.js";
+import type {
+  ParsedSellerProductInput,
+  RejectedSellerProductEntry,
+  RejectedSellerProductEntryReason
+} from "./model.js";
+
+type FieldValidation<T> =
+  | { ok: true; value: T }
+  | { ok: false; reason: RejectedSellerProductEntryReason };
+
+export function validateSellerProductInput(input: unknown): ParsedSellerProductInput {
+  const sourceEntries = Array.isArray(input) ? input : [];
+  const entries: SellerProductEntry[] = [];
+  const entriesRejected: RejectedSellerProductEntry[] = [];
+
+  sourceEntries.forEach((sourceEntry, sourceIndex) => {
+    const parsedEntry = validateSellerProductEntry(sourceEntry, sourceIndex);
+
+    if ("entry" in parsedEntry) {
+      entries.push(parsedEntry.entry);
+    } else {
+      entriesRejected.push(parsedEntry.rejectedEntry);
+    }
+  });
+
+  return { entries, entriesRejected };
+}
+
+function validateSellerProductEntry(
+  sourceEntry: unknown,
+  sourceIndex: number
+): { entry: SellerProductEntry } | { rejectedEntry: RejectedSellerProductEntry } {
+  const sourceObject = toSourceEntryObject(sourceEntry);
+
+  const sellerName = validateRequiredString(sourceObject, "SellerName");
+  const sellerProductReference = validateRequiredString(sourceObject, "SellerProductId");
+  const name = validateRequiredString(sourceObject, "Name");
+  const brand = validateOptionalString(sourceObject, "Brand");
+  const category = validateOptionalString(sourceObject, "Category");
+  const reasons = collectReasons([
+    sellerName,
+    sellerProductReference,
+    name,
+    brand,
+    category
+  ]);
+
+  if (reasons.length > 0) {
+    return {
+      rejectedEntry: {
+        sourceIndex,
+        ...(sellerName.ok ? { sellerName: sellerName.value } : {}),
+        ...(sellerProductReference.ok ? { sellerProductReference: sellerProductReference.value } : {}),
+        reasons
+      }
+    };
+  }
+
+  if (!sellerName.ok || !sellerProductReference.ok || !name.ok || !brand.ok || !category.ok) {
+    throw new InputValidationInvariantError("Expected seller product entry fields to be valid.");
+  }
+
+  return {
+    entry: {
+      sellerName: sellerName.value,
+      sellerProductReference: sellerProductReference.value,
+      name: name.value,
+      brand: brand.value,
+      category: category.value
+    }
+  };
+}
+
+function validateRequiredString(
+  sourceObject: Record<string, unknown>,
+  field: string
+): FieldValidation<string> {
+  const value = sourceObject[field];
+
+  if (value === undefined || value === null || value === "") {
+    return {
+      ok: false,
+      reason: {
+        field,
+        code: "required",
+        message: `${field} must be a non-empty string.`
+      }
+    };
+  }
+
+  if (typeof value !== "string") {
+    return {
+      ok: false,
+      reason: {
+        field,
+        code: "invalid_type",
+        message: `${field} must be a string.`
+      }
+    };
+  }
+
+  return { ok: true, value };
+}
+
+function validateOptionalString(
+  sourceObject: Record<string, unknown>,
+  field: string
+): FieldValidation<string | null> {
+  const value = sourceObject[field];
+
+  if (value === undefined || value === null) {
+    return { ok: true, value: null };
+  }
+
+  if (typeof value !== "string") {
+    return {
+      ok: false,
+      reason: {
+        field,
+        code: "invalid_type",
+        message: `${field} must be a string or null.`
+      }
+    };
+  }
+
+  return { ok: true, value };
+}
+
+function collectReasons(
+  validations: Array<FieldValidation<unknown>>
+): RejectedSellerProductEntryReason[] {
+  return validations.flatMap((validation) => validation.ok ? [] : [validation.reason]);
+}
+
+function toSourceEntryObject(sourceEntry: unknown): Record<string, unknown> {
+  if (typeof sourceEntry === "object" && sourceEntry !== null && !Array.isArray(sourceEntry)) {
+    return sourceEntry as Record<string, unknown>;
+  }
+
+  return {};
+}

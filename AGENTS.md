@@ -21,6 +21,14 @@ The agent MUST NOT write a batch of tests for multiple future behaviors and defe
 
 When a workflow rule changes, the agent MUST inspect active OpenSpec task lists and propose updates to all affected unchecked future tasks before continuing implementation. Before starting any OpenSpec task, the agent MUST verify the task is shaped as a vertical behavior slice. If the task is horizontal, stale, or inconsistent with verified behavior, the agent MUST propose a task-list update before implementation.
 
+## Layer-Owned Errors
+
+When throwing errors from source code, the agent MUST use a specific error class owned by the relevant layer. The agent MUST NOT throw generic `Error` for domain, input, database, CLI, or application invariants unless the user explicitly approves an exception.
+
+## Exported Function Tests
+
+Exported source functions MUST have direct unit tests unless they are explicitly documented as internal module plumbing and covered through a higher public seam. When adding or exporting a function, the agent MUST either add or update direct tests in the same edit batch, or document why the higher seam is the intended test boundary.
+
 ### Gate 1: Pre-Edit Plan Review
 
 Before making any relevant source, test, spec, task-list, or documentation change, the agent MUST:
