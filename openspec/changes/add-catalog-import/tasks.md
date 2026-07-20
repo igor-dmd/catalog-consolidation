@@ -30,9 +30,9 @@
 
 - [x] 5.1 Add synthetic SQLite schema fixture behavior with focused tests, representative assessment catalog tables, and `npm test -- --run src/db`.
 - [x] 5.2 Add text seller product reference migration behavior with focused tests, SQL migration implementation, and `npm test -- --run src/db`.
-- [ ] 5.3 Add seller link uniqueness migration behavior with focused tests, SQL migration implementation, and `npm test -- --run src/db`.
-- [ ] 5.4 Add migration idempotency behavior with focused tests, migration runner implementation, and `npm test -- --run src/db`.
-- [ ] 5.5 Verify migrations with `npm test -- --run src/db`.
+- [x] 5.3 Add seller link uniqueness migration behavior with focused tests, SQL migration implementation, and `npm test -- --run src/db`.
+- [x] 5.4 Add migration idempotency behavior with focused tests, migration runner implementation, and `npm test -- --run src/db`.
+- [x] 5.5 Verify migrations with `npm test -- --run src/db`.
 
 ## 6. Import Use Case
 

@@ -1,10 +1,10 @@
 import Database from "better-sqlite3";
 import { describe, expect, it } from "vitest";
 import { createSyntheticCatalogSchema } from "../../../test/fixtures/synthetic/catalog-schema.js";
-import { applyTextSellerProductReferenceMigration } from "./text-seller-product-reference.js";
+import { runCatalogMigrations } from "./runner.js";
 
-describe("text seller product reference migration", () => {
-  it("changes seller product references from integer storage to text storage", () => {
+describe("catalog migration runner", () => {
+  it("applies catalog migrations once and records them", () => {
     const db = new Database(":memory:");
 
     try {
@@ -18,9 +18,21 @@ describe("text seller product reference migration", () => {
         VALUES (1, 'Camera Seller', 1001)
       `).run();
 
-      applyTextSellerProductReferenceMigration(db);
+      runCatalogMigrations(db);
+      runCatalogMigrations(db);
 
       expect(columnType(db, "SellerProducts", "SellerProductId")).toBe("TEXT");
+      expect(uniqueIndexColumns(db, "SellerProducts")).toEqual([
+        ["SellerName", "SellerProductId"]
+      ]);
+      expect(db.prepare(`
+        SELECT Id
+        FROM CatalogMigrations
+        ORDER BY Id
+      `).all()).toEqual([
+        { Id: "001_text_seller_product_reference" },
+        { Id: "002_seller_product_link_uniqueness" }
+      ]);
       expect(db.prepare(`
         SELECT SellerProductId
         FROM SellerProducts
@@ -34,7 +46,6 @@ describe("text seller product reference migration", () => {
         INSERT INTO SellerProducts (ProductId, SellerName, SellerProductId)
         VALUES (1, 'UUID Seller', ?)
       `).run(uuidReference);
-
       expect(db.prepare(`
         SELECT SellerProductId
         FROM SellerProducts
@@ -42,6 +53,15 @@ describe("text seller product reference migration", () => {
       `).get()).toEqual({
         SellerProductId: uuidReference
       });
+
+      expect(() => db.prepare(`
+        INSERT INTO SellerProducts (ProductId, SellerName, SellerProductId)
+        VALUES (1, 'UUID Seller', ?)
+      `).run(uuidReference)).toThrow(/UNIQUE constraint failed/);
+      expect(() => db.prepare(`
+        INSERT INTO SellerProducts (ProductId, SellerName, SellerProductId)
+        VALUES (1, 'Other Seller', ?)
+      `).run(uuidReference)).not.toThrow();
     } finally {
       db.close();
     }
@@ -58,4 +78,24 @@ function columnType(
     FROM pragma_table_info(?)
     WHERE name = ?
   `).get(tableName, columnName) as { type: string } | undefined)?.type;
+}
+
+function uniqueIndexColumns(
+  db: Database.Database,
+  tableName: string
+): string[][] {
+  return db.prepare(`
+    SELECT name
+    FROM pragma_index_list(?)
+    WHERE "unique" = 1
+    ORDER BY name
+  `).all(tableName).map((indexRow) => {
+    const indexName = (indexRow as { name: string }).name;
+
+    return db.prepare(`
+      SELECT name
+      FROM pragma_index_info(?)
+      ORDER BY seqno
+    `).all(indexName).map((columnRow) => (columnRow as { name: string }).name);
+  });
 }
