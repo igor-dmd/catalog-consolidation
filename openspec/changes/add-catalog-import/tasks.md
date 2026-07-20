@@ -21,34 +21,34 @@
 
 ## 4. Input Parsing and Validation
 
-- [ ] 4.1 Add tests for unreadable or malformed JSON input failing before import.
-- [ ] 4.2 Add tests for parseable input with rejected entries that include identifying context and reasons.
-- [ ] 4.3 Add tests for duplicate `SellerName + seller product reference` values inside one input file, including the seller entry idempotency key shape.
-- [ ] 4.4 Implement hand-written parsing and validation for seller product entries, including rejected entry output shape.
-- [ ] 4.5 Verify input behavior with `npm test -- --run src/input`.
+- [x] 4.1 Add unreadable or malformed JSON input behavior with focused tests, minimal implementation, and `npm test -- --run src/input`.
+- [ ] 4.2 Add parseable invalid-entry rejection behavior with focused tests, minimal implementation, identifying context, reasons, and `npm test -- --run src/input`.
+- [ ] 4.3 Add duplicate `SellerName + seller product reference` behavior with focused tests, minimal implementation, seller entry idempotency key shape, and `npm test -- --run src/input`.
+- [ ] 4.4 Verify input behavior with `npm test -- --run src/input`.
 
 ## 5. SQLite Migrations
 
-- [ ] 5.1 Add synthetic SQLite schema fixtures representative of the assessment catalog tables.
-- [ ] 5.2 Add SQL migration files for opaque text seller product references and seller link uniqueness protection.
-- [ ] 5.3 Implement a migration runner that records applied migrations and skips them on later runs.
-- [ ] 5.4 Verify migrations with `npm test -- --run src/db`.
+- [ ] 5.1 Add synthetic SQLite schema fixture behavior with focused tests, representative assessment catalog tables, and `npm test -- --run src/db`.
+- [ ] 5.2 Add opaque text seller product reference migration behavior with focused tests, SQL migration implementation, and `npm test -- --run src/db`.
+- [ ] 5.3 Add seller link uniqueness migration behavior with focused tests, SQL migration implementation, and `npm test -- --run src/db`.
+- [ ] 5.4 Add migration idempotency behavior with focused tests, migration runner implementation, and `npm test -- --run src/db`.
+- [ ] 5.5 Verify migrations with `npm test -- --run src/db`.
 
 ## 6. Import Use Case
 
-- [ ] 6.1 Add integration tests for matching existing catalog products by normalized name and brand.
-- [ ] 6.2 Add integration tests for inserting new catalog products with cleaned source values.
-- [ ] 6.3 Add integration tests for brandless identity, ambiguous catalog matches, and rejected entries.
-- [ ] 6.4 Add integration tests for first-run link creation and repeated-run idempotency.
-- [ ] 6.5 Implement the import use case with migrations before import, valid-entry writes inside one transaction, and the import result output shape.
-- [ ] 6.6 Verify import behavior with `npm test -- --run src/import`.
+- [ ] 6.1 Add existing catalog product matching behavior with integration tests, minimal import implementation, normalized name and brand matching, and `npm test -- --run src/import`.
+- [ ] 6.2 Add new catalog product insertion behavior with integration tests, minimal import implementation, cleaned source values, and `npm test -- --run src/import`.
+- [ ] 6.3 Add brandless identity behavior with integration tests, minimal import implementation, and `npm test -- --run src/import`.
+- [ ] 6.4 Add ambiguous catalog match rejection behavior with integration tests, minimal import implementation, rejected entry output, and `npm test -- --run src/import`.
+- [ ] 6.5 Add seller link creation and repeated-run idempotency behavior with integration tests, minimal import implementation, result counts, and `npm test -- --run src/import`.
+- [ ] 6.6 Add valid-entry transaction behavior with integration tests, minimal import implementation, rollback on unexpected write failure, and `npm test -- --run src/import`.
+- [ ] 6.7 Verify import behavior with `npm test -- --run src/import`.
 
 ## 7. CLI Adapter
 
-- [ ] 7.1 Add CLI smoke tests for required arguments, non-zero failures, and stdout JSON shape.
-- [ ] 7.2 Implement argument parsing for `--db` and `--input`.
-- [ ] 7.3 Wire the CLI adapter to the import use case and print `productsInserted`, `productsMatched`, `sellerLinksCreated`, `sellerLinksSkipped`, and `entriesRejected`.
-- [ ] 7.4 Verify CLI behavior with `npm test -- --run src/cli`.
+- [ ] 7.1 Add required CLI argument behavior with smoke tests, minimal argument parsing for `--db` and `--input`, non-zero failures, and `npm test -- --run src/cli`.
+- [ ] 7.2 Add successful CLI import output behavior with smoke tests, import use case wiring, stdout JSON fields, and `npm test -- --run src/cli`.
+- [ ] 7.3 Verify CLI behavior with `npm test -- --run src/cli`.
 
 ## 8. Documentation and Final Verification
 

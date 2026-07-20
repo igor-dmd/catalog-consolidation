@@ -46,6 +46,7 @@ This document captures the durable design decisions for the catalog consolidatio
 
 - The required behavior is exposed as a TypeScript CLI import command.
 - The CLI is a thin adapter over an import use case; domain logic and database access remain testable outside command parsing.
+- Prefer synchronous filesystem and database operations in the import path. The command processes one import at a time, and synchronous flow keeps orchestration aligned with `better-sqlite3`. Use async APIs only for genuinely asynchronous boundaries, streaming, parallel work, or libraries that require them.
 - `import` writes by default. Dry-run, validate-only, inspect, rollback, and explain-match are deferred to avoid scope creep.
 - The implementation stack is Node.js, TypeScript, Vitest, `tsx`, `better-sqlite3`, and hand-written validation. Zod or similar validation libraries can be added later if validation grows.
 

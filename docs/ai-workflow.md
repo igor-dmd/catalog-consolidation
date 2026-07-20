@@ -21,7 +21,11 @@ OpenSpec changes should describe one cohesive product or behavior change, not on
 
 For example, `add-catalog-import` remains one change because project setup, normalization, validation, migrations, the import use case, the CLI adapter, and README updates all support the same required catalog import operation.
 
-Implementation should still proceed incrementally. Work through the OpenSpec task list one relevant task slice at a time, write or update tests for that slice, verify it, and only then mark the task complete. After completing a relevant task slice, stop for developer review before moving to the next unchecked task.
+Implementation should still proceed incrementally using vertical TDD. For each behavior slice, agree the public seam, write one focused failing test or small coherent test slice, implement only enough code to pass it, run the relevant narrow verification, and only then mark the related task complete. After completing a relevant task slice, stop for developer review before moving to the next unchecked task.
+
+Do not batch tests for several future behaviors and defer implementation to a later task. If an OpenSpec task list separates tests and implementation horizontally, treat the list as planning guidance and execute it as vertical behavior slices while keeping checkboxes aligned with verified passing behavior.
+
+When the project workflow changes, active OpenSpec task lists must be checked and all affected unchecked future tasks must be reshaped before implementation continues. Before starting an OpenSpec task, verify that it describes a vertical behavior slice. If it does not, update the task list first so task completion remains tied to passing behavior rather than partial test or implementation inventory.
 
 Split future OpenSpec changes only when the resulting pieces are independently meaningful capabilities or requirement changes that can be reviewed, implemented, and validated on their own.
 

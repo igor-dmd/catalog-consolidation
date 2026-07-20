@@ -4,6 +4,23 @@
 
 The agent MUST treat planning approval and code approval as separate gates.
 
+## Mandatory Vertical TDD
+
+Implementation work MUST proceed in vertical TDD slices unless the user explicitly approves an exception.
+
+For each behavior slice, the agent MUST:
+
+1. Identify the public seam under test.
+2. Add or update one focused failing test or small coherent test slice.
+3. Implement only the code needed to make that slice pass.
+4. Run the relevant narrow verification command.
+5. Mark the related task complete only after verification passes.
+6. Stop for user code review before starting the next behavior slice.
+
+The agent MUST NOT write a batch of tests for multiple future behaviors and defer implementation to a later task. OpenSpec task ordering does not override this rule; if an OpenSpec task list separates tests and implementation horizontally, the agent MUST work through it as vertical behavior slices and keep task checkboxes aligned with verified passing behavior.
+
+When a workflow rule changes, the agent MUST inspect active OpenSpec task lists and propose updates to all affected unchecked future tasks before continuing implementation. Before starting any OpenSpec task, the agent MUST verify the task is shaped as a vertical behavior slice. If the task is horizontal, stale, or inconsistent with verified behavior, the agent MUST propose a task-list update before implementation.
+
 ### Gate 1: Pre-Edit Plan Review
 
 Before making any relevant source, test, spec, task-list, or documentation change, the agent MUST:
