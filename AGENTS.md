@@ -15,7 +15,7 @@ For each behavior slice, the agent MUST:
 3. Implement only the code needed to make that slice pass.
 4. Run the relevant narrow verification command.
 5. Mark the related task complete only after verification passes.
-6. Stop for user code review before starting the next behavior slice.
+6. Continue to the next behavior slice in the same approved task section.
 
 The agent MUST NOT write a batch of tests for multiple future behaviors and defer implementation to a later task. OpenSpec task ordering does not override this rule; if an OpenSpec task list separates tests and implementation horizontally, the agent MUST work through it as vertical behavior slices and keep task checkboxes aligned with verified passing behavior.
 
@@ -48,11 +48,13 @@ The agent MUST NOT edit files until the user explicitly approves the plan.
 
 ### Gate 2: Post-Edit Code Review
 
-After making any relevant implementation change, the agent MUST stop and prompt the user to review the generated code before continuing to the next relevant change.
+After completing a numbered OpenSpec task section, such as all tasks under `6. Import Use Case`, the agent MUST stop and prompt the user to review the generated code before continuing to the next numbered section.
 
-The agent MUST NOT continue implementing additional relevant tasks, update unrelated task checkboxes, proceed to the next task group, or make follow-up code changes until the user explicitly approves the generated code.
+Within an approved numbered section, the agent MAY continue through multiple verified vertical behavior slices without stopping for review after each checked subtask. The agent MUST NOT proceed to the next numbered section, update unrelated task checkboxes, or make follow-up code changes outside the approved section until the user explicitly approves the generated code.
 
-A passing test run does NOT replace user code review.
+The agent MUST still stop mid-section if implementation reveals a blocker, scope change, design issue, stale or horizontal task shape, or any required artifact update that was not covered by the approved plan.
+
+A passing test run does NOT replace user code review at the section boundary.
 
 ### Relevant Changes
 
@@ -80,4 +82,4 @@ Only explicit approval counts, such as:
 - "proceed with the next task"
 - "make the next changes"
 
-Plan approval only authorizes the next edit batch. It does not authorize skipping post-edit code review.
+Plan approval authorizes the approved task section or explicitly described edit batch. It does not authorize proceeding into the next numbered section or skipping post-edit code review at the section boundary.
