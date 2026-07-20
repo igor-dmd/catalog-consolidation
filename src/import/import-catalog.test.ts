@@ -1,5 +1,6 @@
 import Database from "better-sqlite3";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { createMigratedAssessmentSchema } from "../db/helpers.js";
 import { CatalogImportWriteError } from "./errors.js";
 import { importCatalogProducts } from "./import-catalog.js";
 
@@ -8,7 +9,7 @@ describe("catalog import use case", () => {
 
   beforeEach(() => {
     db = new Database(":memory:");
-    createAssessmentSchema(db);
+    createMigratedAssessmentSchema(db);
   });
 
   afterEach(() => {
@@ -307,25 +308,3 @@ describe("catalog import use case", () => {
     expect(db.prepare("SELECT COUNT(*) AS count FROM SellerProducts").get()).toEqual({ count: 0 });
   });
 });
-
-function createAssessmentSchema(db: Database.Database): void {
-  db.exec(`
-    CREATE TABLE Products (
-      Id INTEGER PRIMARY KEY,
-      Name TEXT NOT NULL,
-      Brand TEXT,
-      Category TEXT
-    );
-
-    CREATE TABLE SellerProducts (
-      Id INTEGER PRIMARY KEY,
-      ProductId INTEGER NOT NULL,
-      SellerName TEXT NOT NULL,
-      SellerProductId TEXT NOT NULL,
-      FOREIGN KEY (ProductId) REFERENCES Products (Id)
-    );
-
-    CREATE UNIQUE INDEX SellerProducts_seller_reference_unique
-    ON SellerProducts (SellerName, SellerProductId);
-  `);
-}

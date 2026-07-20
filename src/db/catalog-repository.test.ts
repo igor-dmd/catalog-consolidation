@@ -6,13 +6,14 @@ import {
   insertSellerProductLink,
   listCatalogProducts
 } from "./catalog-repository.js";
+import { createMigratedAssessmentSchema } from "./helpers.js";
 
 describe("catalog repository", () => {
   let db: Database.Database;
 
   beforeEach(() => {
     db = new Database(":memory:");
-    createAssessmentSchema(db);
+    createMigratedAssessmentSchema(db);
   });
 
   afterEach(() => {
@@ -87,25 +88,3 @@ describe("catalog repository", () => {
     ]);
   });
 });
-
-function createAssessmentSchema(db: Database.Database): void {
-  db.exec(`
-    CREATE TABLE Products (
-      Id INTEGER PRIMARY KEY,
-      Name TEXT NOT NULL,
-      Brand TEXT,
-      Category TEXT
-    );
-
-    CREATE TABLE SellerProducts (
-      Id INTEGER PRIMARY KEY,
-      ProductId INTEGER NOT NULL,
-      SellerName TEXT NOT NULL,
-      SellerProductId TEXT NOT NULL,
-      FOREIGN KEY (ProductId) REFERENCES Products (Id)
-    );
-
-    CREATE UNIQUE INDEX SellerProducts_seller_reference_unique
-    ON SellerProducts (SellerName, SellerProductId);
-  `);
-}

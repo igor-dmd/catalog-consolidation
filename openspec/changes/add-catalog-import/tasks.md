@@ -46,9 +46,9 @@
 
 ## 7. CLI Adapter
 
-- [ ] 7.1 Add required CLI argument behavior with smoke tests, minimal argument parsing for `--db` and `--input`, non-zero failures, and `npm test -- --run src/cli`.
-- [ ] 7.2 Add successful CLI import output behavior with smoke tests, import use case wiring, stdout JSON fields, and `npm test -- --run src/cli`.
-- [ ] 7.3 Verify CLI behavior with `npm test -- --run src/cli`.
+- [x] 7.1 Add required CLI argument behavior with smoke tests, minimal argument parsing for `--db` and `--input`, non-zero failures, and `npm test -- --run src/cli`.
+- [x] 7.2 Add successful CLI import output behavior with smoke tests, import use case wiring, stdout JSON fields, and `npm test -- --run src/cli`.
+- [x] 7.3 Verify CLI behavior with `npm test -- --run src/cli`.
 
 ## 8. Documentation and Final Verification
 
