@@ -75,6 +75,8 @@ This document captures the durable design decisions for the catalog consolidatio
 - Test the import use case with a temporary SQLite database and fixture JSON.
 - Keep CLI tests thin: argument parsing, exit code, and output shape.
 - Avoid testing private repository methods or SQL internals unless needed for a focused regression.
+- Retire tests when their seam stops being relevant. Temporary lower-level tests used during TDD should be deleted or folded into the higher public seam once that seam covers the behavior.
+- Do not keep duplicate tests as extra safety when they only restate stronger public behavior coverage or lock in internal plumbing.
 
 ## Confidentiality
 

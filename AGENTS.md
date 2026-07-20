@@ -29,6 +29,12 @@ When throwing errors from source code, the agent MUST use a specific error class
 
 Exported source functions MUST have direct unit tests unless they are explicitly documented as internal module plumbing and covered through a higher public seam. When adding or exporting a function, the agent MUST either add or update direct tests in the same edit batch, or document why the higher seam is the intended test boundary.
 
+## Test Retirement
+
+Temporary or lower-level tests created to drive a TDD slice MUST be removed or folded into the higher public seam test once the higher seam exists and covers the behavior. The agent MUST NOT keep obsolete tests as extra safety when they only duplicate stronger public behavior coverage or lock in internal plumbing.
+
+When removing an export, collapsing an abstraction, or replacing a temporary seam with a public seam, the agent MUST inspect affected tests in the same edit batch and remove or rewrite tests that are no longer relevant.
+
 ### Gate 1: Pre-Edit Plan Review
 
 Before making any relevant source, test, spec, task-list, or documentation change, the agent MUST:

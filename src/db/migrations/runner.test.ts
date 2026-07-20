@@ -1,6 +1,5 @@
 import Database from "better-sqlite3";
 import { describe, expect, it } from "vitest";
-import { createSyntheticCatalogSchema } from "../../../test/fixtures/synthetic/catalog-schema.js";
 import { runCatalogMigrations } from "./runner.js";
 
 describe("catalog migration runner", () => {
@@ -8,7 +7,7 @@ describe("catalog migration runner", () => {
     const db = new Database(":memory:");
 
     try {
-      createSyntheticCatalogSchema(db);
+      createAssessmentSchema(db);
       db.prepare(`
         INSERT INTO Products (Name, Brand, Category)
         VALUES ('Camera Canon EOS R6', 'Canon', 'Photography')
@@ -17,6 +16,8 @@ describe("catalog migration runner", () => {
         INSERT INTO SellerProducts (ProductId, SellerName, SellerProductId)
         VALUES (1, 'Camera Seller', 1001)
       `).run();
+
+      expect(columnType(db, "SellerProducts", "SellerProductId")).toBe("INTEGER");
 
       runCatalogMigrations(db);
       runCatalogMigrations(db);
@@ -67,6 +68,25 @@ describe("catalog migration runner", () => {
     }
   });
 });
+
+function createAssessmentSchema(db: Database.Database): void {
+  db.exec(`
+    CREATE TABLE Products (
+      Id INTEGER PRIMARY KEY,
+      Name TEXT NOT NULL,
+      Brand TEXT,
+      Category TEXT
+    );
+
+    CREATE TABLE SellerProducts (
+      Id INTEGER PRIMARY KEY,
+      ProductId INTEGER NOT NULL,
+      SellerName TEXT NOT NULL,
+      SellerProductId INTEGER NOT NULL,
+      FOREIGN KEY (ProductId) REFERENCES Products (Id)
+    );
+  `);
+}
 
 function columnType(
   db: Database.Database,
