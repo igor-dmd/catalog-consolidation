@@ -1,12 +1,11 @@
 import type { SellerProductEntry } from "../domain/index.js";
 
-export interface ParsedSellerProductInput {
+export interface ValidatedSellerProductInput {
   entries: SellerProductEntry[];
   entriesRejected: RejectedSellerProductEntry[];
 }
 
 export interface RejectedSellerProductEntry {
-  sourceIndex: number;
   sellerName?: string;
   sellerProductReference?: string;
   reasons: RejectedSellerProductEntryReason[];

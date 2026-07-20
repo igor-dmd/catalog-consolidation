@@ -1,11 +1,11 @@
 import { readFileSync } from "node:fs";
 import { InputFileJsonError, InputFileReadError } from "./errors.js";
-import type { ParsedSellerProductInput } from "./model.js";
+import type { ValidatedSellerProductInput } from "./model.js";
 import { validateSellerProductInput } from "./validation.js";
 
 export function parseSellerProductEntriesFromFile(
   inputPath: string
-): ParsedSellerProductInput {
+): ValidatedSellerProductInput {
   const contents = readInputFile(inputPath);
   return validateSellerProductInput(parseInputJson(inputPath, contents));
 }

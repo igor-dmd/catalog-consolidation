@@ -66,7 +66,6 @@ describe("seller product input validation", () => {
       entries: [],
       entriesRejected: [
         {
-          sourceIndex: 0,
           sellerName: "Missing Name Seller",
           sellerProductReference: "missing-name-001",
           reasons: [
@@ -78,7 +77,6 @@ describe("seller product input validation", () => {
           ]
         },
         {
-          sourceIndex: 1,
           sellerName: "Invalid Reference Seller",
           reasons: [
             {
@@ -134,7 +132,6 @@ describe("seller product input validation", () => {
       ],
       entriesRejected: [
         {
-          sourceIndex: 1,
           sellerName: "Camera Seller",
           sellerProductReference: "camera-r6-001",
           reasons: [

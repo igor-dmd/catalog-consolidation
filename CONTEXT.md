@@ -4,6 +4,14 @@ This context describes the catalog consolidation challenge: importing seller-pro
 
 ## Language
 
+**Import File**:
+The external JSON file supplied to an import command. It is the filesystem artifact read before seller product entries can be parsed or validated.
+_Avoid_: Input, payload
+
+**Import Input**:
+The decoded seller-provided records from a parseable import file, before valid seller product entries and rejected entries are separated.
+_Avoid_: Import file, payload
+
 **Catalog Product**:
 A canonical product stored in the marketplace catalog. It represents the marketplace's consolidated view of a product, independent of any one seller.
 _Avoid_: Item, listing

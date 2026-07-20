@@ -41,7 +41,7 @@ export function importCatalogProducts(
   const importableEntries: ImportableEntry[] = [];
   const existingCatalogProducts = listCatalogProducts(db);
 
-  entries.forEach((entry, sourceIndex) => {
+  entries.forEach((entry) => {
     if (hasSellerProductLink(db, {
       sellerName: entry.sellerName,
       sellerProductReference: entry.sellerProductReference
@@ -53,7 +53,7 @@ export function importCatalogProducts(
     const catalogMatch = classifyCatalogMatch(entry, existingCatalogProducts);
 
     if (catalogMatch.kind === "ambiguous") {
-      result.entriesRejected.push(rejectAmbiguousCatalogMatch(entry, sourceIndex));
+      result.entriesRejected.push(rejectAmbiguousCatalogMatch(entry));
       return;
     }
 
@@ -136,12 +136,8 @@ function sellerProductLinkFromEntry(
   };
 }
 
-function rejectAmbiguousCatalogMatch(
-  entry: SellerProductEntry,
-  sourceIndex: number
-): RejectedSellerProductEntry {
+function rejectAmbiguousCatalogMatch(entry: SellerProductEntry): RejectedSellerProductEntry {
   return {
-    sourceIndex,
     sellerName: entry.sellerName,
     sellerProductReference: entry.sellerProductReference,
     reasons: [

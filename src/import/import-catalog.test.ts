@@ -162,7 +162,6 @@ describe("catalog import use case", () => {
       sellerLinksSkipped: 0,
       entriesRejected: [
         {
-          sourceIndex: 0,
           sellerName: "Cable Seller",
           sellerProductReference: "cable-ambiguous-001",
           reasons: [
@@ -213,7 +212,6 @@ describe("catalog import use case", () => {
       sellerLinksSkipped: 0,
       entriesRejected: [
         {
-          sourceIndex: 1,
           sellerName: "Cable Seller",
           sellerProductReference: "cable-ambiguous-001",
           reasons: [

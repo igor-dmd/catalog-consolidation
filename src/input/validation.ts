@@ -1,9 +1,9 @@
 import type { SellerProductEntry } from "../domain/index.js";
 import { InputValidationInvariantError } from "./errors.js";
 import type {
-  ParsedSellerProductInput,
   RejectedSellerProductEntry,
-  RejectedSellerProductEntryReason
+  RejectedSellerProductEntryReason,
+  ValidatedSellerProductInput
 } from "./model.js";
 
 type FieldValidation<T> =
@@ -15,14 +15,14 @@ interface SellerEntryIdempotencyKey {
   sellerProductReference: string;
 }
 
-export function validateSellerProductInput(input: unknown): ParsedSellerProductInput {
+export function validateSellerProductInput(input: unknown): ValidatedSellerProductInput {
   const sourceEntries = Array.isArray(input) ? input : [];
   const entries: SellerProductEntry[] = [];
   const entriesRejected: RejectedSellerProductEntry[] = [];
   const acceptedSellerEntryKeys = new Set<string>();
 
-  sourceEntries.forEach((sourceEntry, sourceIndex) => {
-    const parsedEntry = validateSellerProductEntry(sourceEntry, sourceIndex);
+  sourceEntries.forEach((sourceEntry) => {
+    const parsedEntry = validateSellerProductEntry(sourceEntry);
 
     if ("rejectedEntry" in parsedEntry) {
       entriesRejected.push(parsedEntry.rejectedEntry);
@@ -32,7 +32,7 @@ export function validateSellerProductInput(input: unknown): ParsedSellerProductI
     const sellerEntryKey = sellerEntryIdempotencyKeyFromEntry(parsedEntry.entry);
 
     if (acceptedSellerEntryKeys.has(serializeSellerEntryIdempotencyKey(sellerEntryKey))) {
-      entriesRejected.push(rejectDuplicateSellerEntry(parsedEntry.entry, sourceIndex));
+      entriesRejected.push(rejectDuplicateSellerEntry(parsedEntry.entry));
       return;
     }
 
@@ -44,8 +44,7 @@ export function validateSellerProductInput(input: unknown): ParsedSellerProductI
 }
 
 function validateSellerProductEntry(
-  sourceEntry: unknown,
-  sourceIndex: number
+  sourceEntry: unknown
 ): { entry: SellerProductEntry } | { rejectedEntry: RejectedSellerProductEntry } {
   const sourceObject = toSourceEntryObject(sourceEntry);
 
@@ -65,7 +64,6 @@ function validateSellerProductEntry(
   if (reasons.length > 0) {
     return {
       rejectedEntry: {
-        sourceIndex,
         ...(sellerName.ok ? { sellerName: sellerName.value } : {}),
         ...(sellerProductReference.ok ? { sellerProductReference: sellerProductReference.value } : {}),
         reasons
@@ -162,12 +160,8 @@ function serializeSellerEntryIdempotencyKey(key: SellerEntryIdempotencyKey): str
   return JSON.stringify([key.sellerName, key.sellerProductReference]);
 }
 
-function rejectDuplicateSellerEntry(
-  entry: SellerProductEntry,
-  sourceIndex: number
-): RejectedSellerProductEntry {
+function rejectDuplicateSellerEntry(entry: SellerProductEntry): RejectedSellerProductEntry {
   return {
-    sourceIndex,
     sellerName: entry.sellerName,
     sellerProductReference: entry.sellerProductReference,
     reasons: [
