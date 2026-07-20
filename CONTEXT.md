@@ -21,8 +21,8 @@ The external identifier received for a seller product entry. It is stored as tex
 _Avoid_: Numeric seller product ID, internal product ID
 
 **Duplicate Product**:
-A seller product entry that represents an existing catalog product and therefore should not create a new catalog product row.
-_Avoid_: Similar product, repeated item
+A seller product entry that represents an existing catalog product and therefore should not create a new catalog product row. This is about catalog consolidation, not repeated seller input.
+_Avoid_: Similar product, repeated seller entry
 
 **Cleaned Value**:
 Source text after trimming leading and trailing whitespace and collapsing repeated internal whitespace, while preserving the source casing.
@@ -40,10 +40,14 @@ _Avoid_: Retry-safe import, duplicate-safe run
 A seller product entry that is not consolidated because it lacks required data or fails validation. Every rejected entry must be reported with enough context to identify what was left out and why.
 _Avoid_: Invalid row, bad record
 
+**Duplicate Seller Entry**:
+A repeated seller-owned entry in the same import input, identified by the same seller name and seller product reference.
+_Avoid_: Ambiguous match, duplicate catalog product
+
 **Seller Entry Idempotency Key**:
 The combination of seller name and seller product reference that identifies whether a seller product entry was already linked.
 _Avoid_: Product identity, catalog key
 
 **Ambiguous Catalog Match**:
-A seller product entry whose product identity matches multiple existing catalog products, making the canonical product unsafe to choose automatically.
-_Avoid_: Duplicate input, fuzzy match
+A seller product entry whose product identity matches multiple existing catalog products, making the canonical product unsafe to choose automatically. This is about conflicting catalog candidates, not repeated seller input.
+_Avoid_: Duplicate seller entry, fuzzy match

@@ -173,7 +173,7 @@ function rejectDuplicateSellerEntry(
     reasons: [
       {
         field: "SellerProductId",
-        code: "duplicate",
+        code: "duplicate_seller_entry",
         message: "SellerName + SellerProductId must be unique within the input file."
       }
     ]

@@ -36,13 +36,13 @@
 
 ## 6. Import Use Case
 
-- [ ] 6.1 Add existing catalog product matching behavior with integration tests, minimal import implementation, normalized name and brand matching, and `npm test -- --run src/import`.
-- [ ] 6.2 Add new catalog product insertion behavior with integration tests, minimal import implementation, cleaned source values, and `npm test -- --run src/import`.
-- [ ] 6.3 Add brandless identity behavior with integration tests, minimal import implementation, and `npm test -- --run src/import`.
-- [ ] 6.4 Add ambiguous catalog match rejection behavior with integration tests, minimal import implementation, rejected entry output, and `npm test -- --run src/import`.
-- [ ] 6.5 Add seller link creation and repeated-run idempotency behavior with integration tests, minimal import implementation, result counts, and `npm test -- --run src/import`.
-- [ ] 6.6 Add valid-entry transaction behavior with integration tests, minimal import implementation, rollback on unexpected write failure, and `npm test -- --run src/import`.
-- [ ] 6.7 Verify import behavior with `npm test -- --run src/import`.
+- [x] 6.1 Add existing catalog product matching behavior with integration tests, minimal import implementation, normalized name and brand matching, and `npm test -- --run src/import`.
+- [x] 6.2 Add new catalog product insertion behavior with integration tests, minimal import implementation, cleaned source values, and `npm test -- --run src/import`.
+- [x] 6.3 Add brandless identity behavior with integration tests, minimal import implementation, and `npm test -- --run src/import`.
+- [x] 6.4 Add ambiguous catalog match rejection behavior with integration tests, minimal import implementation, rejected entry output, and `npm test -- --run src/import`.
+- [x] 6.5 Add seller link creation and repeated-run idempotency behavior with integration tests, minimal import implementation, result counts, and `npm test -- --run src/import`.
+- [x] 6.6 Add valid-entry transaction behavior with integration tests, minimal import implementation, rollback on unexpected write failure, and `npm test -- --run src/import`.
+- [x] 6.7 Verify import behavior with `npm test -- --run src/import`.
 
 ## 7. CLI Adapter
 

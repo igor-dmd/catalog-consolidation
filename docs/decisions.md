@@ -54,6 +54,7 @@ This document captures the durable design decisions for the catalog consolidatio
 ## Architecture Organization
 
 - Design public seams around behavior-level questions, not helper choreography. Prefer one deep module interface over several exported helper functions that callers must combine correctly.
+- Prefer stateless module functions over classes for adapters and use cases unless there is durable instance state, polymorphism, lifecycle ownership, or a clear interface boundary that benefits from object construction. Pass dependencies such as `Database.Database` explicitly.
 - Apply the deletion test before adding a module or export. If deleting it only moves complexity to callers, the module is probably shallow.
 - Keep operation-local helper functions and helper types private unless a caller needs them as part of a public seam.
 - Adapters own translation only. Database schema modules use database-facing shapes; mapper modules are the only modules that know both database and domain vocabulary.

@@ -1,4 +1,10 @@
 export {
+  hasSellerProductLink,
+  insertCatalogProduct,
+  insertSellerProductLink,
+  listCatalogProducts
+} from "./catalog-repository.js";
+export {
   catalogProductFromRow,
   catalogProductToInsertParams,
   sellerProductLinkFromRow,
