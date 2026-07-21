@@ -140,6 +140,20 @@ Output fields:
 - `openspec/changes/add-catalog-import`: OpenSpec planning artifacts for this change
 - `docs`: design decisions and implementation context
 
+## Working With AI
+
+This project used AI as a structured engineering partner, not as an unreviewed code generator. The [mattpocock/skills](https://github.com/mattpocock/skills) workflows were useful for shaping the problem: `grill-me` and `grill-with-docs` helped define requirements, terminology, and decisions before implementation; `improve-codebase-architecture` is useful for periodic reviews of module boundaries and code structure.
+
+Implementation was organized with [OpenSpec](https://github.com/Fission-AI/OpenSpec/blob/main/docs/getting-started.md), so work moved through explicit planning artifacts before code:
+
+- `openspec/changes/add-catalog-import/proposal.md`: intent, scope, and non-goals.
+- `openspec/changes/add-catalog-import/specs/catalog-import/spec.md`: required behavior and scenarios.
+- `openspec/changes/add-catalog-import/design.md`: technical approach and trade-offs.
+- `openspec/changes/add-catalog-import/tasks.md`: phased implementation checklist.
+- `docs/decisions.md` and `docs/ai-workflow.md`: durable context for future contributors and future AI sessions.
+
+Keep these artifacts current when behavior changes. They reduce ambiguity for humans and give AI agents a stable source of project context.
+
 ## Confidentiality
 
 Do not commit supplied assessment PDFs, the original SQLite database, or the original seller product import file. Keep those assets outside the repository and pass their local paths with `--db` and `--input`.
