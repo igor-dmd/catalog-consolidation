@@ -18,19 +18,23 @@ const catalogMigrations: CatalogMigration[] = [
 ];
 
 export function runCatalogMigrations(db: Database.Database): void {
-  ensureCatalogMigrationsTable(db);
+  const runMigrations = db.transaction(() => {
+    ensureCatalogMigrationsTable(db);
 
-  for (const migration of catalogMigrations) {
-    if (hasMigrationBeenApplied(db, migration.id)) {
-      continue;
+    for (const migration of catalogMigrations) {
+      if (hasMigrationBeenApplied(db, migration.id)) {
+        continue;
+      }
+
+      db.exec(readFileSync(migration.sqlPath, "utf8"));
+      db.prepare(`
+        INSERT INTO CatalogMigrations (Id)
+        VALUES (?)
+      `).run(migration.id);
     }
+  });
 
-    db.exec(readFileSync(migration.sqlPath, "utf8"));
-    db.prepare(`
-      INSERT INTO CatalogMigrations (Id)
-      VALUES (?)
-    `).run(migration.id);
-  }
+  runMigrations();
 }
 
 function ensureCatalogMigrationsTable(db: Database.Database): void {

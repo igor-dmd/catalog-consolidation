@@ -6,7 +6,7 @@ describe("seller product input validation", () => {
     expect(validateSellerProductInput([
       {
         SellerName: "Camera Seller",
-        SellerProductId: "camera-r6-001",
+        Id: "camera-r6-001",
         Name: "  Camera Canon EOS R6  ",
         Brand: " Canon ",
         Category: " Photography "
@@ -29,7 +29,7 @@ describe("seller product input validation", () => {
     expect(validateSellerProductInput([
       {
         SellerName: "Cable Seller",
-        SellerProductId: "cable-001",
+        Id: "cable-001",
         Name: "USB-C Cable",
         Brand: null
       }
@@ -51,13 +51,13 @@ describe("seller product input validation", () => {
     expect(validateSellerProductInput([
       {
         SellerName: "Missing Name Seller",
-        SellerProductId: "missing-name-001",
+        Id: "missing-name-001",
         Brand: "Acme",
         Category: "Accessories"
       },
       {
         SellerName: "Invalid Reference Seller",
-        SellerProductId: 42,
+        Id: 42,
         Name: "USB-C Cable",
         Brand: null,
         Category: null
@@ -80,9 +80,9 @@ describe("seller product input validation", () => {
           sellerName: "Invalid Reference Seller",
           reasons: [
             {
-              field: "SellerProductId",
+              field: "Id",
               code: "invalid_type",
-              message: "SellerProductId must be a string."
+              message: "Id must be a string."
             }
           ]
         }
@@ -94,21 +94,21 @@ describe("seller product input validation", () => {
     expect(validateSellerProductInput([
       {
         SellerName: "Camera Seller",
-        SellerProductId: "camera-r6-001",
+        Id: "camera-r6-001",
         Name: "Camera Canon EOS R6",
         Brand: "Canon",
         Category: "Photography"
       },
       {
         SellerName: "Camera Seller",
-        SellerProductId: "camera-r6-001",
+        Id: "camera-r6-001",
         Name: "Duplicate Camera Canon EOS R6",
         Brand: "Canon",
         Category: "Photography"
       },
       {
         SellerName: "Camera Seller",
-        SellerProductId: "camera-r6-002",
+        Id: "camera-r6-002",
         Name: "Camera Canon EOS R7",
         Brand: "Canon",
         Category: "Photography"
@@ -136,9 +136,9 @@ describe("seller product input validation", () => {
           sellerProductReference: "camera-r6-001",
           reasons: [
             {
-              field: "SellerProductId",
+              field: "Id",
               code: "duplicate_seller_entry",
-              message: "SellerName + SellerProductId must be unique within the input file."
+              message: "SellerName + Id must be unique within the input file."
             }
           ]
         }

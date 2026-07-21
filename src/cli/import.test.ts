@@ -71,7 +71,7 @@ describe("import CLI", () => {
     try {
       createLegacyAssessmentSchema(db);
       db.prepare(`
-        INSERT INTO Products (Name, Brand, Category)
+        INSERT INTO Product (Name, Brand, Category)
         VALUES ('Camera Canon EOS R6', 'Canon', 'Photography')
       `).run();
     } finally {
@@ -81,21 +81,21 @@ describe("import CLI", () => {
     writeFileSync(inputPath, JSON.stringify([
       {
         SellerName: "Camera Seller",
-        SellerProductId: "camera-r6-001",
+        Id: "camera-r6-001",
         Name: " camera   canon eos r6 ",
         Brand: " CANON ",
         Category: "Seller Photography"
       },
       {
         SellerName: "Cable Seller",
-        SellerProductId: "cable-001",
+        Id: "cable-001",
         Name: " USB-C   Cable ",
         Brand: " Acme ",
         Category: " Accessories "
       },
       {
         SellerName: "Rejected Seller",
-        SellerProductId: "missing-name-001",
+        Id: "missing-name-001",
         Brand: "Acme"
       }
     ]), "utf8");
@@ -132,7 +132,7 @@ describe("import CLI", () => {
     try {
       expect(verificationDb.prepare(`
         SELECT Name, Brand, Category
-        FROM Products
+        FROM Product
         ORDER BY Id
       `).all()).toEqual([
         {
@@ -148,7 +148,7 @@ describe("import CLI", () => {
       ]);
       expect(verificationDb.prepare(`
         SELECT ProductId, SellerName, SellerProductId
-        FROM SellerProducts
+        FROM SellerProduct
         ORDER BY Id
       `).all()).toEqual([
         {
@@ -196,10 +196,10 @@ describe("import CLI", () => {
     const repeatedRunVerificationDb = new Database(dbPath, { readonly: true });
 
     try {
-      expect(repeatedRunVerificationDb.prepare("SELECT COUNT(*) AS count FROM Products").get()).toEqual({
+      expect(repeatedRunVerificationDb.prepare("SELECT COUNT(*) AS count FROM Product").get()).toEqual({
         count: 2
       });
-      expect(repeatedRunVerificationDb.prepare("SELECT COUNT(*) AS count FROM SellerProducts").get()).toEqual({
+      expect(repeatedRunVerificationDb.prepare("SELECT COUNT(*) AS count FROM SellerProduct").get()).toEqual({
         count: 2
       });
     } finally {

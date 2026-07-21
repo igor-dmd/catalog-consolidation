@@ -51,7 +51,7 @@ function validateSellerProductEntry(
   const sourceObject = toSourceEntryObject(sourceEntry);
 
   const sellerName = validateRequiredString(sourceObject, "SellerName");
-  const sellerProductReference = validateRequiredString(sourceObject, "SellerProductId");
+  const sellerProductReference = validateRequiredString(sourceObject, "Id");
   const name = validateRequiredString(sourceObject, "Name");
   const brand = validateOptionalString(sourceObject, "Brand");
   const category = validateOptionalString(sourceObject, "Category");
@@ -168,9 +168,9 @@ function rejectDuplicateSellerEntry(entry: SellerProductEntry): RejectedSellerPr
     sellerProductReference: entry.sellerProductReference,
     reasons: [
       {
-        field: "SellerProductId",
+        field: "Id",
         code: "duplicate_seller_entry",
-        message: "SellerName + SellerProductId must be unique within the input file."
+        message: "SellerName + Id must be unique within the input file."
       }
     ]
   };

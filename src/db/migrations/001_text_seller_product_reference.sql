@@ -1,14 +1,14 @@
 PRAGMA foreign_keys = OFF;
 
-CREATE TABLE SellerProducts_text_reference_migration (
+CREATE TABLE SellerProduct_text_reference_migration (
   Id INTEGER PRIMARY KEY,
   ProductId INTEGER NOT NULL,
   SellerName TEXT NOT NULL,
   SellerProductId TEXT NOT NULL,
-  FOREIGN KEY (ProductId) REFERENCES Products (Id)
+  FOREIGN KEY (ProductId) REFERENCES Product (Id)
 );
 
-INSERT INTO SellerProducts_text_reference_migration (
+INSERT INTO SellerProduct_text_reference_migration (
   Id,
   ProductId,
   SellerName,
@@ -19,11 +19,11 @@ SELECT
   ProductId,
   SellerName,
   CAST(SellerProductId AS TEXT)
-FROM SellerProducts;
+FROM SellerProduct;
 
-DROP TABLE SellerProducts;
+DROP TABLE SellerProduct;
 
-ALTER TABLE SellerProducts_text_reference_migration
-RENAME TO SellerProducts;
+ALTER TABLE SellerProduct_text_reference_migration
+RENAME TO SellerProduct;
 
 PRAGMA foreign_keys = ON;

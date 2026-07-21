@@ -1,20 +1,20 @@
 [
   {
     "SellerName": "Camera Seller",
-    "SellerProductId": "camera-r6-001",
+    "Id": "camera-r6-001",
     "Name": "  Camera Canon EOS R6  ",
     "Brand": " Canon ",
     "Category": " Photography "
   },
   {
     "SellerName": "Missing Name Seller",
-    "SellerProductId": "missing-name-001",
+    "Id": "missing-name-001",
     "Brand": "Acme",
     "Category": "Accessories"
   },
   {
     "SellerName": "Invalid Reference Seller",
-    "SellerProductId": 42,
+    "Id": 42,
     "Name": "USB-C Cable",
     "Brand": null,
     "Category": null

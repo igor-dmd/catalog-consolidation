@@ -1,2 +1,2 @@
-CREATE UNIQUE INDEX SellerProducts_seller_reference_unique
-ON SellerProducts (SellerName, SellerProductId);
+CREATE UNIQUE INDEX SellerProduct_seller_reference_unique
+ON SellerProduct (SellerName, SellerProductId);

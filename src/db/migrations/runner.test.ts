@@ -10,21 +10,21 @@ describe("catalog migration runner", () => {
     try {
       createLegacyAssessmentSchema(db);
       db.prepare(`
-        INSERT INTO Products (Name, Brand, Category)
+        INSERT INTO Product (Name, Brand, Category)
         VALUES ('Camera Canon EOS R6', 'Canon', 'Photography')
       `).run();
       db.prepare(`
-        INSERT INTO SellerProducts (ProductId, SellerName, SellerProductId)
+        INSERT INTO SellerProduct (ProductId, SellerName, SellerProductId)
         VALUES (1, 'Camera Seller', 1001)
       `).run();
 
-      expect(columnType(db, "SellerProducts", "SellerProductId")).toBe("INTEGER");
+      expect(columnType(db, "SellerProduct", "SellerProductId")).toBe("INTEGER");
 
       runCatalogMigrations(db);
       runCatalogMigrations(db);
 
-      expect(columnType(db, "SellerProducts", "SellerProductId")).toBe("TEXT");
-      expect(uniqueIndexColumns(db, "SellerProducts")).toEqual([
+      expect(columnType(db, "SellerProduct", "SellerProductId")).toBe("TEXT");
+      expect(uniqueIndexColumns(db, "SellerProduct")).toEqual([
         ["SellerName", "SellerProductId"]
       ]);
       expect(db.prepare(`
@@ -37,7 +37,7 @@ describe("catalog migration runner", () => {
       ]);
       expect(db.prepare(`
         SELECT SellerProductId
-        FROM SellerProducts
+        FROM SellerProduct
         WHERE SellerName = 'Camera Seller'
       `).get()).toEqual({
         SellerProductId: "1001"
@@ -45,25 +45,46 @@ describe("catalog migration runner", () => {
 
       const uuidReference = "87bbf5ad-9a90-43bb-9616-90223198ad86";
       db.prepare(`
-        INSERT INTO SellerProducts (ProductId, SellerName, SellerProductId)
+        INSERT INTO SellerProduct (ProductId, SellerName, SellerProductId)
         VALUES (1, 'UUID Seller', ?)
       `).run(uuidReference);
       expect(db.prepare(`
         SELECT SellerProductId
-        FROM SellerProducts
+        FROM SellerProduct
         WHERE SellerName = 'UUID Seller'
       `).get()).toEqual({
         SellerProductId: uuidReference
       });
 
       expect(() => db.prepare(`
-        INSERT INTO SellerProducts (ProductId, SellerName, SellerProductId)
+        INSERT INTO SellerProduct (ProductId, SellerName, SellerProductId)
         VALUES (1, 'UUID Seller', ?)
       `).run(uuidReference)).toThrow(/UNIQUE constraint failed/);
       expect(() => db.prepare(`
-        INSERT INTO SellerProducts (ProductId, SellerName, SellerProductId)
+        INSERT INTO SellerProduct (ProductId, SellerName, SellerProductId)
         VALUES (1, 'Other Seller', ?)
       `).run(uuidReference)).not.toThrow();
+    } finally {
+      db.close();
+    }
+  });
+
+  it("rolls back migration artifacts when a migration fails", () => {
+    const db = new Database(":memory:");
+
+    try {
+      db.exec(`
+        CREATE TABLE Product (
+          Id INTEGER PRIMARY KEY,
+          Name TEXT NOT NULL,
+          Brand TEXT,
+          Category TEXT
+        );
+      `);
+
+      expect(() => runCatalogMigrations(db)).toThrow(/no such table: SellerProduct/);
+      expect(tableExists(db, "CatalogMigrations")).toBe(false);
+      expect(tableExists(db, "SellerProduct_text_reference_migration")).toBe(false);
     } finally {
       db.close();
     }
@@ -100,4 +121,13 @@ function uniqueIndexColumns(
       ORDER BY seqno
     `).all(indexName).map((columnRow) => (columnRow as { name: string }).name);
   });
+}
+
+function tableExists(db: Database.Database, tableName: string): boolean {
+  return db.prepare(`
+    SELECT 1
+    FROM sqlite_master
+    WHERE type = 'table'
+      AND name = ?
+  `).get(tableName) !== undefined;
 }

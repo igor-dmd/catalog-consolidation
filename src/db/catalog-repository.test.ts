@@ -22,7 +22,7 @@ describe("catalog repository", () => {
 
   it("lists catalog products as domain models", () => {
     db.prepare(`
-      INSERT INTO Products (Name, Brand, Category)
+      INSERT INTO Product (Name, Brand, Category)
       VALUES ('Camera Canon EOS R6', 'Canon', 'Photography')
     `).run();
 
@@ -59,7 +59,7 @@ describe("catalog repository", () => {
 
   it("detects and inserts seller product links by seller idempotency key", () => {
     db.prepare(`
-      INSERT INTO Products (Name, Brand, Category)
+      INSERT INTO Product (Name, Brand, Category)
       VALUES ('USB-C Cable', 'Acme', 'Accessories')
     `).run();
 
@@ -78,7 +78,7 @@ describe("catalog repository", () => {
     expect(hasSellerProductLink(db, key)).toBe(true);
     expect(db.prepare(`
       SELECT ProductId, SellerName, SellerProductId
-      FROM SellerProducts
+      FROM SellerProduct
     `).all()).toEqual([
       {
         ProductId: 1,

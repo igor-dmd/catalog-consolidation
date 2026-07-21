@@ -18,7 +18,7 @@ describe("catalog import use case", () => {
 
   it("matches existing catalog products by normalized name and brand", () => {
     db.prepare(`
-      INSERT INTO Products (Name, Brand, Category)
+      INSERT INTO Product (Name, Brand, Category)
       VALUES ('Camera Canon EOS R6', 'Canon', 'Photography')
     `).run();
 
@@ -41,7 +41,7 @@ describe("catalog import use case", () => {
     });
     expect(db.prepare(`
       SELECT Name, Brand, Category
-      FROM Products
+      FROM Product
     `).all()).toEqual([
       {
         Name: "Camera Canon EOS R6",
@@ -51,7 +51,7 @@ describe("catalog import use case", () => {
     ]);
     expect(db.prepare(`
       SELECT ProductId, SellerName, SellerProductId
-      FROM SellerProducts
+      FROM SellerProduct
     `).all()).toEqual([
       {
         ProductId: 1,
@@ -81,7 +81,7 @@ describe("catalog import use case", () => {
     });
     expect(db.prepare(`
       SELECT Name, Brand, Category
-      FROM Products
+      FROM Product
     `).all()).toEqual([
       {
         Name: "USB-C Cable",
@@ -91,7 +91,7 @@ describe("catalog import use case", () => {
     ]);
     expect(db.prepare(`
       SELECT ProductId, SellerName, SellerProductId
-      FROM SellerProducts
+      FROM SellerProduct
     `).all()).toEqual([
       {
         ProductId: 1,
@@ -103,7 +103,7 @@ describe("catalog import use case", () => {
 
   it("matches brandless seller entries only to brandless catalog products", () => {
     db.prepare(`
-      INSERT INTO Products (Name, Brand, Category)
+      INSERT INTO Product (Name, Brand, Category)
       VALUES
         ('USB-C Cable', 'Acme', 'Accessories'),
         ('USB-C Cable', NULL, 'Cables')
@@ -128,7 +128,7 @@ describe("catalog import use case", () => {
     });
     expect(db.prepare(`
       SELECT ProductId, SellerName, SellerProductId
-      FROM SellerProducts
+      FROM SellerProduct
     `).all()).toEqual([
       {
         ProductId: 2,
@@ -140,7 +140,7 @@ describe("catalog import use case", () => {
 
   it("rejects ambiguous catalog matches without creating seller links", () => {
     db.prepare(`
-      INSERT INTO Products (Name, Brand, Category)
+      INSERT INTO Product (Name, Brand, Category)
       VALUES
         ('USB-C Cable', 'Acme', 'Accessories'),
         (' usb-c   cable ', ' ACME ', 'Cables')
@@ -177,13 +177,13 @@ describe("catalog import use case", () => {
     });
     expect(db.prepare(`
       SELECT ProductId, SellerName, SellerProductId
-      FROM SellerProducts
+      FROM SellerProduct
     `).all()).toEqual([]);
   });
 
   it("rejects ambiguous catalog matches before writing valid entries", () => {
     db.prepare(`
-      INSERT INTO Products (Name, Brand, Category)
+      INSERT INTO Product (Name, Brand, Category)
       VALUES
         ('USB-C Cable', 'Acme', 'Accessories'),
         (' usb-c   cable ', ' ACME ', 'Cables')
@@ -227,7 +227,7 @@ describe("catalog import use case", () => {
     });
     expect(db.prepare(`
       SELECT Name, Brand, Category
-      FROM Products
+      FROM Product
       ORDER BY Id
     `).all()).toEqual([
       {
@@ -243,7 +243,7 @@ describe("catalog import use case", () => {
     ]);
     expect(db.prepare(`
       SELECT ProductId, SellerName, SellerProductId
-      FROM SellerProducts
+      FROM SellerProduct
     `).all()).toEqual([]);
   });
 
@@ -273,15 +273,15 @@ describe("catalog import use case", () => {
       sellerLinksSkipped: 1,
       entriesRejected: []
     });
-    expect(db.prepare("SELECT COUNT(*) AS count FROM Products").get()).toEqual({ count: 1 });
-    expect(db.prepare("SELECT COUNT(*) AS count FROM SellerProducts").get()).toEqual({ count: 1 });
+    expect(db.prepare("SELECT COUNT(*) AS count FROM Product").get()).toEqual({ count: 1 });
+    expect(db.prepare("SELECT COUNT(*) AS count FROM SellerProduct").get()).toEqual({ count: 1 });
   });
 
   it("rolls back valid-entry writes when an unexpected write failure occurs", () => {
     db.exec(`
       CREATE TRIGGER fail_second_seller_link_insert
-      BEFORE INSERT ON SellerProducts
-      WHEN (SELECT COUNT(*) FROM SellerProducts) = 1
+      BEFORE INSERT ON SellerProduct
+      WHEN (SELECT COUNT(*) FROM SellerProduct) = 1
       BEGIN
         SELECT RAISE(ABORT, 'simulated seller link failure');
       END;
@@ -304,7 +304,7 @@ describe("catalog import use case", () => {
       }
     ])).toThrow(CatalogImportWriteError);
 
-    expect(db.prepare("SELECT COUNT(*) AS count FROM Products").get()).toEqual({ count: 0 });
-    expect(db.prepare("SELECT COUNT(*) AS count FROM SellerProducts").get()).toEqual({ count: 0 });
+    expect(db.prepare("SELECT COUNT(*) AS count FROM Product").get()).toEqual({ count: 0 });
+    expect(db.prepare("SELECT COUNT(*) AS count FROM SellerProduct").get()).toEqual({ count: 0 });
   });
 });

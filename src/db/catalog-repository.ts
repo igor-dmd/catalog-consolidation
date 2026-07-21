@@ -17,7 +17,7 @@ interface SellerProductLinkKey {
 export function listCatalogProducts(db: Database.Database): CatalogProduct[] {
   return db.prepare(`
     SELECT Id, Name, Brand, Category
-    FROM Products
+    FROM Product
     ORDER BY Id
   `).all().map((row) => catalogProductFromRow(row as CatalogProductRow));
 }
@@ -28,7 +28,7 @@ export function insertCatalogProduct(
 ): CatalogProduct {
   const params = catalogProductToInsertParams(product);
   const result = db.prepare(`
-    INSERT INTO Products (Name, Brand, Category)
+    INSERT INTO Product (Name, Brand, Category)
     VALUES (@Name, @Brand, @Category)
   `).run(params satisfies CatalogProductInsertParams);
 
@@ -44,7 +44,7 @@ export function hasSellerProductLink(
 ): boolean {
   return db.prepare(`
     SELECT 1
-    FROM SellerProducts
+    FROM SellerProduct
     WHERE SellerName = ?
       AND SellerProductId = ?
   `).get(key.sellerName, key.sellerProductReference) !== undefined;
@@ -57,7 +57,7 @@ export function insertSellerProductLink(
   const params = sellerProductLinkToInsertParams(link);
 
   db.prepare(`
-    INSERT INTO SellerProducts (ProductId, SellerName, SellerProductId)
+    INSERT INTO SellerProduct (ProductId, SellerName, SellerProductId)
     VALUES (@ProductId, @SellerName, @SellerProductId)
   `).run(params);
 }

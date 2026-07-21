@@ -9,8 +9,8 @@ The importer consolidates seller entries into canonical catalog products by norm
 - Node.js 22 or newer
 - npm
 - A SQLite catalog database with the assessment-style tables:
-  - `Products (Id, Name, Brand, Category)`
-  - `SellerProducts (Id, ProductId, SellerName, SellerProductId)`
+  - `Product (Id, Name, Brand, Category)`
+  - `SellerProduct (Id, SellerName, ProductId, SellerProductId)`
 
 Install dependencies:
 
@@ -60,7 +60,7 @@ The input file must be valid JSON containing an array of seller product entries.
 [
   {
     "SellerName": "Camera Seller",
-    "SellerProductId": "camera-r6-001",
+    "Id": "camera-r6-001",
     "Name": " Camera Canon EOS R6 ",
     "Brand": " Canon ",
     "Category": " Photography "
@@ -71,7 +71,7 @@ The input file must be valid JSON containing an array of seller product entries.
 Required fields:
 
 - `SellerName`: non-empty string
-- `SellerProductId`: non-empty string
+- `Id`: non-empty string seller product reference from the import file
 - `Name`: non-empty string
 
 Optional fields:
@@ -99,9 +99,9 @@ A completed parseable import prints one JSON object to stdout:
       "sellerProductReference": "camera-r6-duplicate",
       "reasons": [
         {
-          "field": "SellerProductId",
+          "field": "Id",
           "code": "duplicate_seller_entry",
-          "message": "SellerName + SellerProductId must be unique within the input file."
+          "message": "SellerName + Id must be unique within the input file."
         }
       ]
     }
@@ -125,7 +125,7 @@ Output fields:
 - `Category` is descriptive metadata and is not part of product identity.
 - Missing or `null` brand matches only brandless catalog products with the same normalized name.
 - Ambiguous matches are rejected instead of choosing a product arbitrarily.
-- `SellerName + SellerProductId` is the seller entry idempotency key.
+- `SellerName + Id` is the import-file seller entry idempotency key.
 - Re-running the same import skips existing seller links instead of creating duplicates.
 - Valid write operations run in a single transaction.
 - Migrations run before import and adapt seller product references to text with uniqueness protection.
