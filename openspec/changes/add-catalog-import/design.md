@@ -44,13 +44,13 @@ The expected stack is Node.js, TypeScript, Vitest, `tsx`, `better-sqlite3`, and 
 
 4. Validate parseable files entry-by-entry, but fail unreadable or malformed files.
 
-   If the input file cannot be read or parsed, the command fails before import. If the file is parseable, invalid entries are reported as rejected entries and valid entries continue through the transaction.
+   If the input file cannot be read or parsed, the command fails before import. If the file is parseable, invalid entries and ambiguous catalog matches are reported as rejected entries, and valid entries continue through the transaction.
 
    Alternative considered: fail the entire import for any invalid entry. The brief requires rejected-entry reporting, so partial rejection within a parseable file gives more useful feedback while still avoiding invalid writes.
 
 5. Use one transaction for valid write operations.
 
-   Migrations run before import. Valid entries are consolidated inside a single database transaction so unexpected write failures roll back the import write phase. Ambiguous catalog matches and duplicate seller references in the same input are rejected before writes.
+   Migrations run before import. Valid, non-rejected entries are consolidated inside a single database transaction so unexpected write failures roll back the import write phase. Ambiguous catalog matches and duplicate seller references in the same input are excluded before writes and reported as rejected entries.
 
    Alternative considered: write each entry independently. That can preserve partial progress on database failures, but weakens predictability for a command that reports one structured import result.
 

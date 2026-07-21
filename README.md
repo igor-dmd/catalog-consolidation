@@ -79,7 +79,7 @@ Optional fields:
 - `Brand`: string or `null`
 - `Category`: string or `null`
 
-Missing optional fields are treated as `null`. Invalid entries inside a parseable file are rejected and reported while valid entries continue through the import.
+Missing optional fields are treated as `null`. Invalid entries inside a parseable file and ambiguous catalog matches are rejected and reported while valid entries continue through the import.
 
 Unreadable files and malformed JSON fail the command before import.
 
@@ -124,10 +124,10 @@ Output fields:
 - Matching is case-insensitive, but inserted product values preserve cleaned source casing.
 - `Category` is descriptive metadata and is not part of product identity.
 - Missing or `null` brand matches only brandless catalog products with the same normalized name.
-- Ambiguous matches are rejected instead of choosing a product arbitrarily.
+- Ambiguous matches are rejected instead of choosing a product arbitrarily, while other valid entries continue importing.
 - `SellerName + Id` is the import-file seller entry idempotency key.
 - Re-running the same import skips existing seller links instead of creating duplicates.
-- Valid write operations run in a single transaction.
+- Valid, non-rejected write operations run in a single transaction.
 - Migrations run before import and adapt seller product references to text with uniqueness protection.
 
 ## Repository Layout

@@ -181,7 +181,7 @@ describe("catalog import use case", () => {
     `).all()).toEqual([]);
   });
 
-  it("rejects ambiguous catalog matches before writing valid entries", () => {
+  it("reports ambiguous catalog matches while writing valid entries", () => {
     db.prepare(`
       INSERT INTO Product (Name, Brand, Category)
       VALUES
@@ -207,9 +207,9 @@ describe("catalog import use case", () => {
     ]);
 
     expect(result).toEqual({
-      productsInserted: 0,
+      productsInserted: 1,
       productsMatched: 0,
-      sellerLinksCreated: 0,
+      sellerLinksCreated: 1,
       sellerLinksSkipped: 0,
       entriesRejected: [
         {
@@ -239,12 +239,23 @@ describe("catalog import use case", () => {
         Name: " usb-c   cable ",
         Brand: " ACME ",
         Category: "Cables"
+      },
+      {
+        Name: "Camera Canon EOS R6",
+        Brand: "Canon",
+        Category: "Photography"
       }
     ]);
     expect(db.prepare(`
       SELECT ProductId, SellerName, SellerProductId
       FROM SellerProduct
-    `).all()).toEqual([]);
+    `).all()).toEqual([
+      {
+        ProductId: 3,
+        SellerName: "Camera Seller",
+        SellerProductId: "camera-r6-001"
+      }
+    ]);
   });
 
   it("creates seller links once and skips them on repeated imports", () => {

@@ -25,35 +25,66 @@ export interface CatalogImportResult {
 
 type ImportableEntry =
   | { kind: "matched"; entry: SellerProductEntry; catalogProduct: CatalogProduct }
-  | { kind: "insert"; entry: SellerProductEntry };
+  | { kind: "unmatched"; entry: SellerProductEntry };
+
+interface ImportPlan {
+  importableEntries: ImportableEntry[];
+  entriesRejected: RejectedSellerProductEntry[];
+  sellerLinksSkipped: number;
+}
+
+interface ImportWriteCounts {
+  productsInserted: number;
+  productsMatched: number;
+  sellerLinksCreated: number;
+}
 
 export function importCatalogProducts(
   db: Database.Database,
   entries: SellerProductEntry[]
 ): CatalogImportResult {
-  const result: CatalogImportResult = {
-    productsInserted: 0,
-    productsMatched: 0,
-    sellerLinksCreated: 0,
-    sellerLinksSkipped: 0,
-    entriesRejected: []
-  };
-  const importableEntries: ImportableEntry[] = [];
   const existingCatalogProducts = listCatalogProducts(db);
+  const importPlan = planCatalogImport(db, entries, existingCatalogProducts);
+
+  try {
+    const writeCounts = writeImportableEntries(
+      db,
+      importPlan.importableEntries,
+      existingCatalogProducts
+    );
+
+    return catalogImportResult({
+      ...writeCounts,
+      sellerLinksSkipped: importPlan.sellerLinksSkipped,
+      entriesRejected: importPlan.entriesRejected
+    });
+  } catch (error) {
+    throw new CatalogImportWriteError(error);
+  }
+}
+
+function planCatalogImport(
+  db: Database.Database,
+  entries: SellerProductEntry[],
+  existingCatalogProducts: CatalogProduct[]
+): ImportPlan {
+  const importableEntries: ImportableEntry[] = [];
+  const entriesRejected: RejectedSellerProductEntry[] = [];
+  let sellerLinksSkipped = 0;
 
   entries.forEach((entry) => {
     if (hasSellerProductLink(db, {
       sellerName: entry.sellerName,
       sellerProductReference: entry.sellerProductReference
     })) {
-      result.sellerLinksSkipped += 1;
+      sellerLinksSkipped += 1;
       return;
     }
 
     const catalogMatch = classifyCatalogMatch(entry, existingCatalogProducts);
 
     if (catalogMatch.kind === "ambiguous") {
-      result.entriesRejected.push(rejectAmbiguousCatalogMatch(entry));
+      entriesRejected.push(rejectAmbiguousCatalogMatch(entry));
       return;
     }
 
@@ -66,24 +97,41 @@ export function importCatalogProducts(
       return;
     }
 
-    importableEntries.push({ kind: "insert", entry });
+    importableEntries.push({ kind: "unmatched", entry });
   });
 
-  if (result.entriesRejected.length > 0) {
-    return result;
-  }
+  return {
+    importableEntries,
+    entriesRejected,
+    sellerLinksSkipped
+  };
+}
 
+function writeImportableEntries(
+  db: Database.Database,
+  importableEntries: ImportableEntry[],
+  existingCatalogProducts: CatalogProduct[]
+): ImportWriteCounts {
+  const counts: ImportWriteCounts = {
+    productsInserted: 0,
+    productsMatched: 0,
+    sellerLinksCreated: 0
+  };
   const importEntries = db.transaction((transactionEntries: ImportableEntry[]) => {
     let catalogProducts = existingCatalogProducts;
 
+    const linkMatchedProduct = (
+      catalogProductId: number,
+      entry: SellerProductEntry
+    ): void => {
+      insertSellerProductLink(db, sellerProductLinkFromEntry(catalogProductId, entry));
+      counts.productsMatched += 1;
+      counts.sellerLinksCreated += 1;
+    };
+
     transactionEntries.forEach((plannedEntry) => {
       if (plannedEntry.kind === "matched") {
-        insertSellerProductLink(db, sellerProductLinkFromEntry(
-          plannedEntry.catalogProduct.id,
-          plannedEntry.entry
-        ));
-        result.productsMatched += 1;
-        result.sellerLinksCreated += 1;
+        linkMatchedProduct(plannedEntry.catalogProduct.id, plannedEntry.entry);
         return;
       }
 
@@ -91,30 +139,34 @@ export function importCatalogProducts(
       const inTransactionMatch = classifyCatalogMatch(entry, catalogProducts);
 
       if (inTransactionMatch.kind === "matched") {
-        insertSellerProductLink(db, sellerProductLinkFromEntry(
-          inTransactionMatch.catalogProduct.id,
-          entry
-        ));
-        result.productsMatched += 1;
-        result.sellerLinksCreated += 1;
+        linkMatchedProduct(inTransactionMatch.catalogProduct.id, entry);
         return;
       }
 
       const insertedProduct = insertCatalogProduct(db, catalogProductFromEntry(entry));
       insertSellerProductLink(db, sellerProductLinkFromEntry(insertedProduct.id, entry));
-      result.productsInserted += 1;
-      result.sellerLinksCreated += 1;
+      counts.productsInserted += 1;
+      counts.sellerLinksCreated += 1;
       catalogProducts = [...catalogProducts, insertedProduct];
     });
   });
 
-  try {
-    importEntries(importableEntries);
-  } catch (error) {
-    throw new CatalogImportWriteError(error);
-  }
+  importEntries(importableEntries);
 
-  return result;
+  return counts;
+}
+
+function catalogImportResult(
+  partialResult: Partial<CatalogImportResult>
+): CatalogImportResult {
+  return {
+    productsInserted: 0,
+    productsMatched: 0,
+    sellerLinksCreated: 0,
+    sellerLinksSkipped: 0,
+    entriesRejected: [],
+    ...partialResult
+  };
 }
 
 function catalogProductFromEntry(entry: SellerProductEntry): Omit<CatalogProduct, "id"> {

@@ -26,12 +26,12 @@ This document captures the durable design decisions for the catalog consolidatio
 
 - Malformed or unreadable input files fail the run.
 - Invalid entries inside a parseable file are rejected and reported with identifying context and a reason.
-- Entries with multiple matching catalog products are rejected as ambiguous; the importer does not choose a canonical product arbitrarily.
+- Entries with multiple matching catalog products are rejected as ambiguous; the importer does not choose a canonical product arbitrarily, and other valid entries continue importing.
 - The import command prints structured JSON with `productsInserted`, `productsMatched`, `sellerLinksCreated`, `sellerLinksSkipped`, and `entriesRejected`.
 
 ## Transactions And Schema
 
-- Valid entries are applied inside a single database transaction. Unexpected database write failures roll back the write phase.
+- Valid, non-rejected entries are applied inside a single database transaction. Unexpected database write failures roll back the write phase.
 - Schema changes live in explicit SQL migration files and are applied before import.
 - Initial schema work should minimally adapt seller product references to text and add uniqueness protection for seller links.
 

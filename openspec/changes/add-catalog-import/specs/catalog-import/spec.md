@@ -58,7 +58,7 @@ The system SHALL normalize catalog product identity using cleaned `Name + Brand`
 
 #### Scenario: Ambiguous catalog match
 - **WHEN** a seller product entry matches multiple existing catalog products by normalized name and brand
-- **THEN** the system rejects the entry as ambiguous and does not create a seller product link for it
+- **THEN** the system rejects the entry as ambiguous, does not create a seller product link for it, and continues importing other valid entries
 
 ### Requirement: SQLite migrations
 The system SHALL apply explicit SQLite migrations before importing seller product entries.
@@ -72,7 +72,7 @@ The system SHALL apply explicit SQLite migrations before importing seller produc
 - **THEN** the system skips already applied migrations and proceeds without duplicating migration effects
 
 ### Requirement: Transactional idempotent import
-The system SHALL import valid seller product entries transactionally and idempotently.
+The system SHALL import valid, non-rejected seller product entries transactionally and idempotently.
 
 #### Scenario: First import creates products and links
 - **WHEN** valid seller product entries are imported for the first time
