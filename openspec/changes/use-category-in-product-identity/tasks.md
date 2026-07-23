@@ -1,8 +1,8 @@
 ## 1. Domain Product Identity
 
-- [ ] 1.1 Public seam: `classifyCatalogMatch`. Add a focused domain test showing that a seller entry matches an existing catalog product only when normalized name, brand, and category all match; implement the category identity component; verify with `npm test -- --run src/domain`.
-- [ ] 1.2 Public seam: `classifyCatalogMatch`. Add a focused domain test showing that missing or `null` category normalizes to an empty identity component and does not match a categorized catalog product by name and brand alone; implement only any remaining domain behavior needed; verify with `npm test -- --run src/domain`.
-- [ ] 1.3 Public seam: `classifyCatalogMatch`. Update the ambiguous-match domain test so ambiguity requires multiple catalog products with matching normalized name, brand, and category; verify with `npm test -- --run src/domain`.
+- [x] 1.1 Public seam: `classifyCatalogMatch`. Add a focused domain test showing that a seller entry matches an existing catalog product only when normalized name, brand, and category all match; implement the category identity component; verify with `npm test -- --run src/domain`.
+- [x] 1.2 Public seam: `classifyCatalogMatch`. Add a focused domain test showing that missing or `null` category normalizes to an empty identity component and does not match a categorized catalog product by name and brand alone; implement only any remaining domain behavior needed; verify with `npm test -- --run src/domain`.
+- [x] 1.3 Public seam: `classifyCatalogMatch`. Update the ambiguous-match domain test so ambiguity requires multiple catalog products with matching normalized name, brand, and category; verify with `npm test -- --run src/domain`.
 
 ## 2. Import Use Case
 

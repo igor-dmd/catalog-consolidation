@@ -10,19 +10,19 @@ describe("domain normalization", () => {
     expect(cleanValue("  iPhone   Pro  MAX  ")).toBe("iPhone Pro MAX");
   });
 
-  it("matches a seller product entry to a catalog product by normalized name and brand", () => {
+  it("matches a seller product entry to a catalog product by normalized name, brand, and category", () => {
     expect(classifyCatalogMatch({
       sellerName: "Camera Seller",
       sellerProductReference: "camera-r6-001",
       name: "  CAMERA Canon   EOS R6 ",
       brand: " Canon ",
-      category: "Photography"
+      category: " PhotoGRAPHY "
     }, [
       {
         id: 7,
         name: "camera canon eos r6",
         brand: "CANON",
-        category: null
+        category: "photography"
       }
     ])).toEqual({
       kind: "matched",
@@ -30,9 +30,26 @@ describe("domain normalization", () => {
         id: 7,
         name: "camera canon eos r6",
         brand: "CANON",
-        category: null
+        category: "photography"
       }
     });
+  });
+
+  it("returns no match when category differs from a catalog product with the same name and brand", () => {
+    expect(classifyCatalogMatch({
+      sellerName: "Camera Seller",
+      sellerProductReference: "camera-r6-001",
+      name: "Camera Canon EOS R6",
+      brand: "Canon",
+      category: "Photo"
+    }, [
+      {
+        id: 7,
+        name: "Camera Canon EOS R6",
+        brand: "Canon",
+        category: "Photography"
+      }
+    ])).toEqual({ kind: "noMatch" });
   });
 
   it("returns no match when no catalog product has the same product identity", () => {
@@ -64,7 +81,7 @@ describe("domain normalization", () => {
         id: 8,
         name: " usb-c   cable ",
         brand: " ACME ",
-        category: "Cables"
+        category: " accessories "
       }
     ];
 
@@ -73,7 +90,7 @@ describe("domain normalization", () => {
       sellerProductReference: "cable-001",
       name: "USB-C Cable",
       brand: "acme",
-      category: null
+      category: "ACCESSORIES"
     }, catalogProducts)).toEqual({
       kind: "ambiguous",
       catalogProducts
@@ -106,6 +123,37 @@ describe("domain normalization", () => {
         id: 8,
         name: "USB-C Cable",
         brand: null,
+        category: null
+      }
+    });
+  });
+
+  it("matches categoryless seller product entries only to categoryless catalog products", () => {
+    expect(classifyCatalogMatch({
+      sellerName: "Cable Seller",
+      sellerProductReference: "cable-001",
+      name: " USB-C Cable ",
+      brand: "Acme",
+      category: null
+    }, [
+      {
+        id: 7,
+        name: "USB-C Cable",
+        brand: "Acme",
+        category: "Accessories"
+      },
+      {
+        id: 8,
+        name: "USB-C Cable",
+        brand: "Acme",
+        category: null
+      }
+    ])).toEqual({
+      kind: "matched",
+      catalogProduct: {
+        id: 8,
+        name: "USB-C Cable",
+        brand: "Acme",
         category: null
       }
     });

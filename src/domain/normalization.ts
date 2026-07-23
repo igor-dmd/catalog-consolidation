@@ -7,6 +7,7 @@ import type {
 interface ProductIdentitySource {
   name: string;
   brand?: string | null;
+  category?: string | null;
 }
 
 export type CatalogMatchClassification =
@@ -41,13 +42,15 @@ export function classifyCatalogMatch(
 function productIdentityFromSource(source: ProductIdentitySource): ProductIdentity {
   return {
     normalizedName: normalizeForIdentityComparison(source.name),
-    normalizedBrand: normalizeForIdentityComparison(source.brand ?? "")
+    normalizedBrand: normalizeForIdentityComparison(source.brand ?? ""),
+    normalizedCategory: normalizeForIdentityComparison(source.category ?? "")
   };
 }
 
 function productIdentitiesEqual(left: ProductIdentity, right: ProductIdentity): boolean {
   return left.normalizedName === right.normalizedName
-    && left.normalizedBrand === right.normalizedBrand;
+    && left.normalizedBrand === right.normalizedBrand
+    && left.normalizedCategory === right.normalizedCategory;
 }
 
 function normalizeForIdentityComparison(value: string): string {
