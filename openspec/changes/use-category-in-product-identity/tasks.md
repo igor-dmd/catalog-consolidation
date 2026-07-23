@@ -6,9 +6,9 @@
 
 ## 2. Import Use Case
 
-- [ ] 2.1 Public seam: `importCatalogProducts`. Add an integration test showing that a seller entry with matching name and brand but different category inserts a new catalog product and seller link; implement the use-case behavior through the updated domain classification; verify with `npm test -- --run src/import`.
-- [ ] 2.2 Public seam: `importCatalogProducts`. Add an integration test showing that a seller entry matches an existing catalog product when normalized name, brand, and category all match, including category case and whitespace normalization; implement only any remaining import behavior needed; verify with `npm test -- --run src/import`.
-- [ ] 2.3 Public seam: `importCatalogProducts`. Update ambiguous import coverage so ambiguous rejection occurs only when multiple existing catalog products match all three identity components; verify with `npm test -- --run src/import`.
+- [x] 2.1 Public seam: `importCatalogProducts`. Add an integration test showing that a seller entry with matching name and brand but different category inserts a new catalog product and seller link; implement the use-case behavior through the updated domain classification; verify with `npm test -- --run src/import`.
+- [x] 2.2 Public seam: `importCatalogProducts`. Add an integration test showing that a seller entry matches an existing catalog product when normalized name, brand, and category all match, including category case and whitespace normalization; implement only any remaining import behavior needed; verify with `npm test -- --run src/import`.
+- [x] 2.3 Public seam: `importCatalogProducts`. Update ambiguous import coverage so ambiguous rejection occurs only when multiple existing catalog products match all three identity components; verify with `npm test -- --run src/import`.
 
 ## 3. CLI And Documentation
 

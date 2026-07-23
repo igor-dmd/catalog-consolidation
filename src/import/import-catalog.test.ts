@@ -16,7 +16,7 @@ describe("catalog import use case", () => {
     db.close();
   });
 
-  it("matches existing catalog products by normalized name and brand", () => {
+  it("inserts a catalog product when category differs from an existing product with the same name and brand", () => {
     db.prepare(`
       INSERT INTO Product (Name, Brand, Category)
       VALUES ('Camera Canon EOS R6', 'Canon', 'Photography')
@@ -28,13 +28,13 @@ describe("catalog import use case", () => {
         sellerProductReference: "camera-r6-001",
         name: " camera   canon eos r6 ",
         brand: " CANON ",
-        category: "Seller Photography"
+        category: "Photo"
       }
     ]);
 
     expect(result).toEqual({
-      productsInserted: 0,
-      productsMatched: 1,
+      productsInserted: 1,
+      productsMatched: 0,
       sellerLinksCreated: 1,
       sellerLinksSkipped: 0,
       entriesRejected: []
@@ -47,6 +47,11 @@ describe("catalog import use case", () => {
         Name: "Camera Canon EOS R6",
         Brand: "Canon",
         Category: "Photography"
+      },
+      {
+        Name: "camera canon eos r6",
+        Brand: "CANON",
+        Category: "Photo"
       }
     ]);
     expect(db.prepare(`
@@ -54,7 +59,7 @@ describe("catalog import use case", () => {
       FROM SellerProduct
     `).all()).toEqual([
       {
-        ProductId: 1,
+        ProductId: 2,
         SellerName: "Camera Seller",
         SellerProductId: "camera-r6-001"
       }
@@ -101,12 +106,57 @@ describe("catalog import use case", () => {
     ]);
   });
 
+  it("matches existing catalog products by normalized name, brand, and category", () => {
+    db.prepare(`
+      INSERT INTO Product (Name, Brand, Category)
+      VALUES ('Camera Canon EOS R6', 'Canon', 'Photography')
+    `).run();
+
+    const result = importCatalogProducts(db, [
+      {
+        sellerName: "Camera Seller",
+        sellerProductReference: "camera-r6-001",
+        name: " camera   canon eos r6 ",
+        brand: " CANON ",
+        category: " photoGRAPHY "
+      }
+    ]);
+
+    expect(result).toEqual({
+      productsInserted: 0,
+      productsMatched: 1,
+      sellerLinksCreated: 1,
+      sellerLinksSkipped: 0,
+      entriesRejected: []
+    });
+    expect(db.prepare(`
+      SELECT Name, Brand, Category
+      FROM Product
+    `).all()).toEqual([
+      {
+        Name: "Camera Canon EOS R6",
+        Brand: "Canon",
+        Category: "Photography"
+      }
+    ]);
+    expect(db.prepare(`
+      SELECT ProductId, SellerName, SellerProductId
+      FROM SellerProduct
+    `).all()).toEqual([
+      {
+        ProductId: 1,
+        SellerName: "Camera Seller",
+        SellerProductId: "camera-r6-001"
+      }
+    ]);
+  });
+
   it("matches brandless seller entries only to brandless catalog products", () => {
     db.prepare(`
       INSERT INTO Product (Name, Brand, Category)
       VALUES
         ('USB-C Cable', 'Acme', 'Accessories'),
-        ('USB-C Cable', NULL, 'Cables')
+        ('USB-C Cable', NULL, NULL)
     `).run();
 
     const result = importCatalogProducts(db, [
@@ -143,7 +193,7 @@ describe("catalog import use case", () => {
       INSERT INTO Product (Name, Brand, Category)
       VALUES
         ('USB-C Cable', 'Acme', 'Accessories'),
-        (' usb-c   cable ', ' ACME ', 'Cables')
+        (' usb-c   cable ', ' ACME ', ' accessories ')
     `).run();
 
     const result = importCatalogProducts(db, [
@@ -152,7 +202,7 @@ describe("catalog import use case", () => {
         sellerProductReference: "cable-ambiguous-001",
         name: "USB-C Cable",
         brand: "acme",
-        category: null
+        category: "ACCESSORIES"
       }
     ]);
 
@@ -167,7 +217,7 @@ describe("catalog import use case", () => {
           sellerProductReference: "cable-ambiguous-001",
           reasons: [
             {
-              field: "Name+Brand",
+              field: "Name+Brand+Category",
               code: "ambiguous_match",
               message: "Seller product identity matches multiple catalog products."
             }
@@ -186,7 +236,7 @@ describe("catalog import use case", () => {
       INSERT INTO Product (Name, Brand, Category)
       VALUES
         ('USB-C Cable', 'Acme', 'Accessories'),
-        (' usb-c   cable ', ' ACME ', 'Cables')
+        (' usb-c   cable ', ' ACME ', ' accessories ')
     `).run();
 
     const result = importCatalogProducts(db, [
@@ -202,7 +252,7 @@ describe("catalog import use case", () => {
         sellerProductReference: "cable-ambiguous-001",
         name: "USB-C Cable",
         brand: "acme",
-        category: null
+        category: "ACCESSORIES"
       }
     ]);
 
@@ -217,7 +267,7 @@ describe("catalog import use case", () => {
           sellerProductReference: "cable-ambiguous-001",
           reasons: [
             {
-              field: "Name+Brand",
+              field: "Name+Brand+Category",
               code: "ambiguous_match",
               message: "Seller product identity matches multiple catalog products."
             }
@@ -238,7 +288,7 @@ describe("catalog import use case", () => {
       {
         Name: " usb-c   cable ",
         Brand: " ACME ",
-        Category: "Cables"
+        Category: " accessories "
       },
       {
         Name: "Camera Canon EOS R6",

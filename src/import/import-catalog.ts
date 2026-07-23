@@ -194,7 +194,7 @@ function rejectAmbiguousCatalogMatch(entry: SellerProductEntry): RejectedSellerP
     sellerProductReference: entry.sellerProductReference,
     reasons: [
       {
-        field: "Name+Brand",
+        field: "Name+Brand+Category",
         code: "ambiguous_match",
         message: "Seller product identity matches multiple catalog products."
       }
