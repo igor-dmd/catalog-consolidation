@@ -4,10 +4,11 @@ This document captures the durable design decisions for the catalog consolidatio
 
 ## Product Matching
 
-- A duplicate catalog product is identified by normalized `Name + Brand`.
-- `Category` is descriptive metadata, not part of product identity. The supplied input includes `Camera Canon EOS R6` with both `Photography` and `Photo`, which makes category too noisy to split identity.
+- A duplicate catalog product is identified by normalized `Name + Brand + Category`.
+- `Category` is a primary product identity component, not only descriptive metadata. Category variants such as `Photography` and `Photo` are treated as different identity values unless an explicit synonym or hierarchy feature is added later.
 - Normalization trims, collapses repeated whitespace, and compares case-insensitively.
-- Missing or `null` brand normalizes to an empty identity component. A brandless entry does not match a branded product by name alone.
+- Missing or `null` brand normalizes to an empty identity component. A brandless entry does not match a branded product by name and category alone.
+- Missing or `null` category normalizes to an empty identity component. A categoryless entry does not match a categorized product by name and brand alone.
 - Normalized identity is computed in TypeScript for this exercise. Persisted normalized columns or expression indexes are a future performance improvement.
 
 ## Product Persistence
