@@ -12,6 +12,6 @@
 
 ## 3. CLI And Documentation
 
-- [ ] 3.1 Public seam: CLI import command. Update thin CLI smoke coverage or existing expectations that describe product matching so the command behavior reflects `Name + Brand + Category`; verify with `npm test -- --run src/cli`.
-- [ ] 3.2 Update README usage notes and `CONTEXT.md` domain language to document category as a primary identity criterion, plus the no-synonym/no-hierarchy non-goals; verify references with `rg -n "Name \\+ Brand|Category.*descriptive|product identity|identity" README.md CONTEXT.md docs openspec/changes/use-category-in-product-identity`.
-- [ ] 3.3 Run full verification with `npm test -- --run` and `openspec validate use-category-in-product-identity --type change --strict --no-interactive`.
+- [x] 3.1 Public seam: CLI import command. Update thin CLI smoke coverage or existing expectations that describe product matching so the command behavior reflects `Name + Brand + Category`; verify with `npm test -- --run src/cli`.
+- [x] 3.2 Update README usage notes and `CONTEXT.md` domain language to document category as a primary identity criterion, plus the no-synonym/no-hierarchy non-goals; verify references with `rg -n "Name \\+ Brand|Category.*descriptive|product identity|identity" README.md CONTEXT.md docs openspec/changes/use-category-in-product-identity`.
+- [x] 3.3 Run full verification with `npm test -- --run` and `openspec validate use-category-in-product-identity --type change --strict --no-interactive`.

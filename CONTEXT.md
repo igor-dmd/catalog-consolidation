@@ -37,7 +37,7 @@ Source text after trimming leading and trailing whitespace and collapsing repeat
 _Avoid_: Normalized value, sanitized value
 
 **Product Identity**:
-The normalized name and brand used to decide whether a seller product entry refers to an existing catalog product. It is compared case-insensitively and is distinct from the cleaned values stored on new catalog products.
+The normalized name, brand, and category used to decide whether a seller product entry refers to an existing catalog product. It is compared case-insensitively and is distinct from the cleaned values stored on new catalog products.
 _Avoid_: Seller product reference, seller entry idempotency key
 
 **Idempotent Import**:

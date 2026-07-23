@@ -2,7 +2,7 @@
 
 TypeScript CLI for importing seller product entries from JSON into an existing SQLite catalog database.
 
-The importer consolidates seller entries into canonical catalog products by normalized `Name + Brand`, creates seller product links for traceability, applies required SQLite migrations before writing, and prints a structured JSON result.
+The importer consolidates seller entries into canonical catalog products by normalized `Name + Brand + Category`, creates seller product links for traceability, applies required SQLite migrations before writing, and prints a structured JSON result.
 
 ## Prerequisites
 
@@ -119,11 +119,13 @@ Output fields:
 
 ## Import Behavior
 
-- Product identity is normalized by cleaned `Name + Brand`.
+- Product identity is normalized by cleaned `Name + Brand + Category`.
 - Cleaning trims leading/trailing whitespace and collapses repeated whitespace.
 - Matching is case-insensitive, but inserted product values preserve cleaned source casing.
-- `Category` is descriptive metadata and is not part of product identity.
-- Missing or `null` brand matches only brandless catalog products with the same normalized name.
+- `Category` is a primary product identity component. Category variants such as `Photo` and `Photography` are different identities.
+- Missing or `null` brand matches only brandless catalog products with the same normalized name and category.
+- Missing or `null` category matches only categoryless catalog products with the same normalized name and brand.
+- Category synonym matching, hierarchy handling, and fuzzy matching are out of scope.
 - Ambiguous matches are rejected instead of choosing a product arbitrarily, while other valid entries continue importing.
 - `SellerName + Id` is the import-file seller entry idempotency key.
 - Re-running the same import skips existing seller links instead of creating duplicates.

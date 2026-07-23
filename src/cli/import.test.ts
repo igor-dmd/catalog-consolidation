@@ -84,7 +84,7 @@ describe("import CLI", () => {
         Id: "camera-r6-001",
         Name: " camera   canon eos r6 ",
         Brand: " CANON ",
-        Category: "Seller Photography"
+        Category: "Photo"
       },
       {
         SellerName: "Cable Seller",
@@ -108,8 +108,8 @@ describe("import CLI", () => {
     expect(io.stderr).toEqual([]);
     expect(io.stdout).toHaveLength(1);
     expect(JSON.parse(io.stdout[0] ?? "")).toEqual({
-      productsInserted: 1,
-      productsMatched: 1,
+      productsInserted: 2,
+      productsMatched: 0,
       sellerLinksCreated: 2,
       sellerLinksSkipped: 0,
       entriesRejected: [
@@ -141,6 +141,11 @@ describe("import CLI", () => {
           Category: "Photography"
         },
         {
+          Name: "camera canon eos r6",
+          Brand: "CANON",
+          Category: "Photo"
+        },
+        {
           Name: "USB-C Cable",
           Brand: "Acme",
           Category: "Accessories"
@@ -152,12 +157,12 @@ describe("import CLI", () => {
         ORDER BY Id
       `).all()).toEqual([
         {
-          ProductId: 1,
+          ProductId: 2,
           SellerName: "Camera Seller",
           SellerProductId: "camera-r6-001"
         },
         {
-          ProductId: 2,
+          ProductId: 3,
           SellerName: "Cable Seller",
           SellerProductId: "cable-001"
         }
@@ -197,7 +202,7 @@ describe("import CLI", () => {
 
     try {
       expect(repeatedRunVerificationDb.prepare("SELECT COUNT(*) AS count FROM Product").get()).toEqual({
-        count: 2
+        count: 3
       });
       expect(repeatedRunVerificationDb.prepare("SELECT COUNT(*) AS count FROM SellerProduct").get()).toEqual({
         count: 2
